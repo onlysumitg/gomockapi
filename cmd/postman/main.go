@@ -45,7 +45,7 @@ func ReadPostmantJson(filename string) {
 	fmt.Println("c.Info.Description.Content", c.Info.Description.Content)
 	fmt.Println("c.Info.Description.Type", c.Info.Description.Type)
 	fmt.Println("c.Info.Description.Version", c.Info.Description.Version)
-	fmt.Println("Postman connection info ==== ======================== =====================end\n\n\n\n\n")
+	fmt.Println("Postman connection info ==== ======================== =====================end")
 
 	for _, v := range c.Variables {
 		fmt.Println("Variable::", v.Key, v.Value)

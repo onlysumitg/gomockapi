@@ -189,7 +189,7 @@ func (app *application) ResponseUpdate(w http.ResponseWriter, r *http.Request) {
 			response.CheckField(validator.MustBeXML(response.ResponseHeader), "header", "Must be a valid XML")
 		}
 		// valid json/xml : header
-		response.CheckField(validator.MustBeFromList(response.ResponseType, "JSON", "XML"), "responsetype", "Valid values are JSON or XML")
+		response.CheckField(validator.MustBeFromList(response.ResponseType, "JSON", "XML", "TEXT"), "responsetype", "Valid values are JSON, XML or TEXT")
 		if response.ResponseType == "JSON" {
 			response.CheckField(validator.MustBeJSON(response.Response), "response", "Must be a valid JSON")
 		}

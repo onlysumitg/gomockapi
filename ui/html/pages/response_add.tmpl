@@ -87,19 +87,32 @@ Response
 
                             <div class="col">
                                 <div class="form-check">
-                                    <input class="form-check-input {{with .Form.FieldErrors.responsetype}} is-invalid {{end}}" type="radio" 
-                                    name="responsetype" id="responsetypexml" 
+                                    <input class="form-check-input {{with .Form.FieldErrors.responsetype}} is-invalid {{end}}" type="radio"
+                                    name="responsetype" id="responsetypexml"
                                     value="XML"
-                                    {{if eq .Form.ResponseType "XML"}} checked {{end}} 
+                                    {{if eq .Form.ResponseType "XML"}} checked {{end}}
                                     >
                                     <label class="form-check-label" for="responsetypexml">
                                       XML
                                     </label>
-                    
-                                  
+
+
                                   </div>
                             </div>
-                          
+
+                            <div class="col">
+                                <div class="form-check">
+                                    <input class="form-check-input {{with .Form.FieldErrors.responsetype}} is-invalid {{end}}" type="radio"
+                                    name="responsetype" id="responsetypetext"
+                                    value="TEXT"
+                                    {{if eq .Form.ResponseType "TEXT"}} checked {{end}}
+                                    >
+                                    <label class="form-check-label" for="responsetypetext">
+                                      TEXT
+                                    </label>
+                                  </div>
+                            </div>
+
                         </div>
                     </div>
                     <!--   REQUEST HEADER TYPE XML od JSON   END-->

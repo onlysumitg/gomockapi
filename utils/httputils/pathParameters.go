@@ -18,7 +18,7 @@ type PathParam struct {
 }
 
 func (p *PathParam) String() string {
-	return fmt.Sprintf("Path Param", p.Name, p.Value, p.DataType, p.IsVariable)
+	return fmt.Sprintf("Path Param: %s %s %s %t", p.Name, p.Value, p.DataType, p.IsVariable)
 }
 
 func GetPathParamMap(urlString string, removePrefix string) ([]*PathParam, error) {

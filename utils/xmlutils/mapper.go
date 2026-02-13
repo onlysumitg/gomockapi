@@ -24,7 +24,7 @@ func XmlToMap(r io.Reader) (map[string]any) {
 	masterkey := "$"
 	for token, err := p.Token(); err == nil; token, err = p.Token() {
 
-		fmt.Println("------------------------", elementCountMap, "\n\n")
+		fmt.Println("------------------------", elementCountMap)
 
 		//fmt.Println("token", token)
 

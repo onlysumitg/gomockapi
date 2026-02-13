@@ -56,6 +56,8 @@ func (s *EndPointResponse) BuildResponsePlaceholder() {
 		} else {
 			s.ResponsePlaceholder = uResponsePlaceholder
 		}
+	case "TEXT":
+		s.ResponsePlaceholder = s.Response
 	}
 
 }
@@ -105,7 +107,8 @@ func (s *EndPointResponse) RebuildResponseParams(wg *sync.WaitGroup, DB *bolt.DB
 		flatmap, err = jsonutils.JsonToFlatMap(s.Response)
 	case "XML":
 		flatmap, _, err = xmlutils.XmlToFlatMapAndPlaceholder(s.Response)
-
+	case "TEXT":
+		flatmap = make(map[string]xmlutils.ValueDatatype)
 	default:
 		err = errors.New("Unknow Request Type")
 

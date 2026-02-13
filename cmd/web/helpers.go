@@ -103,7 +103,11 @@ func (app *application) writeJSONorXML(responseType string, w http.ResponseWrite
 	}
 	// Add the "Content-Type: application/json" header, then write the status code and
 	// JSON response.
-	w.Header().Set("Content-Type", fmt.Sprintf("application/%s", strings.ToLower(responseType)))
+	if strings.EqualFold(responseType, "TEXT") {
+		w.Header().Set("Content-Type", "text/plain")
+	} else {
+		w.Header().Set("Content-Type", fmt.Sprintf("application/%s", strings.ToLower(responseType)))
+	}
 	w.WriteHeader(status)
 	w.Write(js)
 	return nil
