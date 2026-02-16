@@ -33,10 +33,9 @@ Response Parameters
 
               <td>
 
-                <a data-toggle="tooltip" data-placement="bottom" title="Change value"  class="btn btn-ghost-info" href='/responseparam/{{$.EndPoint.ID}}/{{$.ResponseParamsOwnerId}}/update/{{.ID}}'> 
-                  <svg class="c-icon">
-                  <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-pencil"></use></svg>
-                
+                <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Change value"  class="btn btn-ghost-info" href='/responseparam/{{$.EndPoint.ID}}/{{$.ResponseParamsOwnerId}}/update/{{.ID}}'>
+                  <i class="bi bi-pencil"></i>
+
                 </a>
 
               </td>
@@ -68,8 +67,9 @@ Response Parameters
 
 {{define "aftercontent"}}
 
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css">
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
   $(document).ready(function () {

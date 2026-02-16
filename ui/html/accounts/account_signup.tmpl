@@ -18,10 +18,9 @@ Signup
             <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
 
             <div class="input-group mb-3">
-                <div class="input-group-prepend"><span class="input-group-text">
-                        <svg class="c-icon">
-                            <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-user"></use>
-                        </svg></span></div>
+                <span class="input-group-text">
+                    <i class="bi bi-person"></i>
+                </span>
                 <input class="form-control {{with .Form.FieldErrors.name}} is-invalid {{end}}" name="name" required
                     maxlength="150" id="id_name" type="text" value='{{.Form.Name}}' placeholder="Full Name">
 
@@ -31,10 +30,9 @@ Signup
             </div>
 
             <div class="input-group mb-3">
-                <div class="input-group-prepend"><span class="input-group-text">
-                        <svg class="c-icon">
-                            <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-envelope-closed"></use>
-                        </svg></span></div>
+                <span class="input-group-text">
+                    <i class="bi bi-envelope"></i>
+                </span>
                 <input class="form-control {{with .Form.FieldErrors.email}} is-invalid {{end}}" name="email" required
                     maxlength="150" id="id_login" type="email" value='{{.Form.Email}}' placeholder="Email">
 
@@ -45,11 +43,9 @@ Signup
 
 
             <div class="input-group mb-4">
-                <div class="input-group-prepend"><span class="input-group-text">
-                        <svg class="c-icon">
-                            <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-lock-locked">
-                            </use>
-                        </svg></span></div>
+                <span class="input-group-text">
+                    <i class="bi bi-lock"></i>
+                </span>
                 <input class="form-control" name="password" id="id_password" type="password" required
                     placeholder="Password">
 
@@ -59,17 +55,16 @@ Signup
             </div>
 
 
-          
+
             <div class="row">
                 <div class="col-6">
-                    <button type="submit" id="login_button" class="btn btn-primary px-4 c-loading-button"
-                        data-coreui="loading-button" data-timeout="500" data-progress="true"> Sign up </button>
+                    <button type="submit" id="login_button" class="btn btn-primary px-4"> Sign up </button>
                 </div>
 
 
 
 
-                <div class="col-6 text-right">
+                <div class="col-6 text-end">
                     <a class="btn btn-link px-0" href="/user/login" type="button"> Already signed up? </a>
                 </div>
             </div>

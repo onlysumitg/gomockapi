@@ -22,3 +22,4 @@ db/
 .history/
 bin/
 uploads/
+node_modules/

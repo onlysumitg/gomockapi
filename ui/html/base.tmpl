@@ -8,267 +8,143 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Zerobit">
   <meta name="author" content="ZeroBit">
-  
-  
+
+
    <title>{{block "title" .}}
     GoMockAPI
     {{end}}
   </title>
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
-    integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" type="text/css" href="https://unpkg.com/notie/dist/notie.min.css">
 
-
-  <link rel="stylesheet" href="/static/fonts/icomoon/style.css">
-  <link rel="stylesheet" href="/static/coreui/css/style.css">
-  <link rel="stylesheet" href="https://unpkg.com/@coreui/icons@2.0.0-beta.3/css/all.min.css">
+  <link rel="stylesheet" href="/static/css/app.css">
 
 </head>
 
-<body class="c-app c-no-layout-transition">
+<body>
 
-  <div style="opacity: 95%" class="c-sidebar c-sidebar-dark c-sidebar-fixed c-sidebar-lg-show" id="sidebar">
-    <div class="c-sidebar-brand d-md-down-none">
-      <div class="c-sidebar-brand-full">
-        <a href="/endpoints"><h5 style="color:white">#GoMockAPI</h5> </a>
-      </div>
-
-      <div class="c-sidebar-brand-minimized">
-        <h5>[/]</h5>
-      </div>
-
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-brand d-none d-lg-flex">
+        <a href="/endpoints"><h5>#GoMockAPI</h5></a>
     </div>
-    <ul class="c-sidebar-nav">
+    <ul class="sidebar-nav">
 
       {{if .TestMode}}
-      <li class="c-sidebar-nav-item">
-        <a class="c-sidebar-nav-link" href="/testmode" ><h5  data-toggle="tooltip" data-placement="bottom" title="Click to view test mode limitations
-        " style="color:#e55353">TEST MODE</h5> </a>
-
+      <li class="sidebar-nav-item">
+        <a class="sidebar-nav-link" href="/testmode"><h5 data-bs-toggle="tooltip" data-bs-placement="bottom" title="Click to view test mode limitations" style="color:#e55353">TEST MODE</h5></a>
      </li>
       {{end}}
 
-
-
-
-
       {{if .CurrentUser}}
-       
-      
-       <li class="c-sidebar-nav-title">User: </li>
-        
-        <li class="c-sidebar-nav-item">
-          <a class="c-sidebar-nav-link" >{{.CurrentUser.Email}}</a>
-
+       <li class="sidebar-nav-title">User: </li>
+        <li class="sidebar-nav-item">
+          <a class="sidebar-nav-link">{{.CurrentUser.Email}}</a>
        </li>
-
-       
        {{end}}
-     
-
 
       {{if .EndPoint}}
       {{if .EndPoint.ID}}
           {{template "editpointoptions" .EndPoint}}
           {{end}}
-
- 
       {{end}}
-
-
-      
-
-
- 
 
       {{if .IsAuthenticated}}
 
-
-
-      <li class="c-sidebar-nav-divider"></li>
-      <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="/endpoints">
-        <svg class="c-icon mfe-2">
-          <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-list"></use>
-      </svg>EndPoints</a>
+      <li class="sidebar-nav-title">Navigation</li>
+      <li class="sidebar-nav-item"><a class="sidebar-nav-link" href="/endpoints">
+        <i class="bi bi-list-ul me-2"></i>EndPoints</a>
       </li>
 
-
-      <li class="c-sidebar-nav-divider"></li>
-      <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="/collections">
-        <svg class="c-icon mfe-2">
-          <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-folder"></use>
-      </svg>Collections</a>
+      <li class="sidebar-nav-divider"></li>
+      <li class="sidebar-nav-item"><a class="sidebar-nav-link" href="/collections">
+        <i class="bi bi-folder me-2"></i>Collections</a>
       </li>
 
-      <li class="c-sidebar-nav-divider"></li>
-      <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="/apilogs">
-        <svg class="c-icon mfe-2">
-          <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-task"></use>
-      </svg>Api Logs</a>
+      <li class="sidebar-nav-divider"></li>
+      <li class="sidebar-nav-item"><a class="sidebar-nav-link" href="/apilogs">
+        <i class="bi bi-journal-text me-2"></i>Api Logs</a>
       </li>
 
-      <li class="c-sidebar-nav-divider"></li>
-      <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="/postman">
-        <svg class="c-icon mfe-2">
-          <use xlink:href="/static/coreui/vendors/coreui/icons/svg/brand.svg#cib-postman"></use>
-      </svg>Postman</a>
+      <li class="sidebar-nav-divider"></li>
+      <li class="sidebar-nav-item"><a class="sidebar-nav-link" href="/postman">
+        <i class="bi bi-send me-2"></i>Postman</a>
       </li>
-      
+
       {{if .CurrentUser.IsSuperUser}}
-      <li class="c-sidebar-nav-divider"></li>
-      <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="/users">
-        <svg class="c-icon mfe-2">
-          <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-user"></use>
-      </svg>Users</a>
+      <li class="sidebar-nav-divider"></li>
+      <li class="sidebar-nav-item"><a class="sidebar-nav-link" href="/users">
+        <i class="bi bi-person me-2"></i>Users</a>
       </li>
 
-      <li class="c-sidebar-nav-divider"></li>
-      <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="/apilogs/clear">
-        <svg class="c-icon mfe-2">
-          <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-trash"></use>
-      </svg>Clear all Logs</a>
+      <li class="sidebar-nav-divider"></li>
+      <li class="sidebar-nav-item"><a class="sidebar-nav-link" href="/apilogs/clear">
+        <i class="bi bi-trash me-2"></i>Clear all Logs</a>
       </li>
       {{end}}
 
-
-
-
-
-
-
-
-     
       {{end}}
-
-
-
-
-
- 
-
 
     </ul>
   </div>
 
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
+  <div class="app-wrapper">
+    <header class="app-header">
+        <button class="header-toggler me-auto" type="button" id="sidebarToggler">
+            <i class="bi bi-list"></i> #GoMockAPI
+        </button>
 
-  <!--  start top navigation -->
-
-
-
-
-
-
-  <!--   end top navigation -->
-
-
-  <div class="c-wrapper">
-    <div   class="h-100"  >
-            <header class="c-header c-header-light c-header-fixed">
-
-                <button class="c-header-toggler c-class-toggler d-lg-none mfe-auto" type="button" data-target="#sidebar"
-                data-class="c-sidebar-show">
-                <svg class="c-icon c-icon-lg">
-                    <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-menu"></use>
-                </svg>#GoMockAPI
-                    </button>
-                    
-                    
-                    <ul class="c-header-nav mfs-auto">
-                      <!-- <li class="c-header-nav-item mr-3">
-
-                        <a class="c-sidebar-nav-link" href="/help">
-                          <svg class="c-icon mfe-2">
-                            <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-info"></use>
-                          </svg>How It works?
-                        </a>
-                      </li> -->
-                      <li class="c-header-nav-item mr-3">
-                        
-                   
-                    </li>
-                                <li class="c-header-nav-item mr-3">
-                                 
-                                          {{if .IsAuthenticated}}
-
-                                    
-
-
-                                          <form action='/user/logout' method='POST' novalidate>
-                                            <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
-                                            <button  type="submit" class="btn btn-ghost-danger w-100  " href="/user/logout">
-                                              <svg class="c-icon mfe-2">
-                                                <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-account-logout"></use>
-                                            </svg>Sign off</button>
-                                          </form>  
-
-
-                                      {{end}}
-
-
-
-                            </li>
-
-                     
-                    </ul>
-            </header>
-        {{template "content" .}}
-      
+        <ul class="header-nav ms-auto">
+            <li class="me-3">
+            </li>
+            <li class="me-3">
+                {{if .IsAuthenticated}}
+                <form action='/user/logout' method='POST' novalidate>
+                    <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+                    <button type="submit" class="btn btn-ghost-danger">
+                        <i class="bi bi-box-arrow-right me-2"></i>Sign off</button>
+                </form>
+                {{end}}
+            </li>
+        </ul>
+    </header>
+    <div class="app-content">
+    {{template "content" .}}
     </div>
-  
-  
-    <footer class="c-footer">
-      <div><a href=""> </a> © 2023.</div>
-      <div class="mfs-auto">ZeroBit</div>
-  </footer>
+
+    <footer class="app-footer">
+    
+      <div class="ms-auto">ZeroBit</div>
+    </footer>
   </div>
 
   <script>
     var websocketurl = "ws://" + "{{ .HostUrl}}" + "/ws/notification"
   </script>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.0.1/introjs.min.css"   crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.0.1/introjs.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-<script src="/static/coreui/vendors/coreui/coreui-pro/js/coreui.bundle.min.js"></script>
-
-
-<script src="/static/coreui/vendors/coreui/icons/js/svgxuse.min.js" type="text/javascript"></script>
-
-
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
-    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous">
-  </script>
-
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
-    integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous">
-  </script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js" type="text/javascript"></script>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
+  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js" type="text/javascript"></script>
 
   <!--https://sweetalert2.github.io/#download-->
   <script src="//cdn.jsdelivr.net/npm/sweetalert2@11" type="text/javascript"></script>
 
-
-
-
-
   <script src="/static/js/reconnecting-websocket.min.js" type="text/javascript"></script>
-
-
-
-
   <script src="/static/js/websocket.js" type="text/javascript"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js"></script>
   <script>
     function notifyModel(message, type = 'success') {
-
       Swal.fire({
         position: 'top-end',
         icon: type,
@@ -279,10 +155,6 @@
       })
     }
 
-
-
-
-
     {{ with .Error}}
     Swal.fire({
       position: 'top-end',
@@ -291,14 +163,10 @@
       showConfirmButton: false,
       timer: 4000,
       showCloseButton: true
-    })  
+    })
     {{end }}
 
-   
         {{with .Flash}}
-      
-
-
     Swal.fire({
       position: 'top-end',
       icon: "success",
@@ -308,9 +176,7 @@
       showCloseButton: true
     })  {{end }}
 
-  
         {{with .Warning}}
-    
     Swal.fire({
       position: 'top-end',
       icon: "warning",
@@ -321,18 +187,10 @@
     }) {{end }}
   </script>
 
-
-
-
   <link rel="stylesheet" type="text/css" href="/static/css/fonts.css">
   <link rel="stylesheet" type="text/css" href="/static/css/dashboard.css">
-
   <link rel="stylesheet" type="text/css" href="/static/css/autocomplete.css">
 
-
-
-
-  <script src="/static/js/popper.min.js"></script>
   {{block "aftercontent" .}}
   {{end}}
   <script src="/static/js/jquery.sticky.js"></script>
@@ -341,10 +199,38 @@
   <link rel="stylesheet" type="text/css" href="/static/css/work.css">
   <script src="/static/js/table.js"></script>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.0.1/intro.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.0.1/intro.min.js"  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- BS5 Tooltip init + Sidebar toggle -->
+  <script>
+    // Init all Bootstrap 5 tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      tooltipTriggerList.map(function(el) {
+        return new bootstrap.Tooltip(el);
+      });
+    });
+
+    // Sidebar toggle for mobile
+    (function() {
+      var toggler = document.getElementById('sidebarToggler');
+      var sidebar = document.getElementById('sidebar');
+      var backdrop = document.getElementById('sidebarBackdrop');
+      if (toggler && sidebar) {
+        toggler.addEventListener('click', function() {
+          sidebar.classList.toggle('show');
+          backdrop.classList.toggle('show');
+        });
+        if (backdrop) {
+          backdrop.addEventListener('click', function() {
+            sidebar.classList.remove('show');
+            backdrop.classList.remove('show');
+          });
+        }
+      }
+    })();
+  </script>
 </body>
-
 
 
 <script>
@@ -370,51 +256,13 @@
     return "";
   }
 
-
-
   $(document).ready(function () {
-
     document.cookie = "lasttabid" + "=" + getCookie("tabid")
-
-
     document.cookie = "tabid" + "=" + uuidv4()
   });
 </script>
 
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 {{end}}

@@ -8,20 +8,20 @@ Users
     <div class="col">
       <div class="card ">
         <div class="card-header">
-          <p class="h5">Users <a class="btn btn-ghost-info float-right" href="/users/add">+Add</a></p>
+          <p class="h5">Users <a class="btn btn-ghost-info float-end" href="/users/add">+Add</a></p>
         </div>
         <div class="card-body">
           <table id="rbackrolelist"
             class="table   table-borderless table-responsive-sm table-striped    ">
             <thead class="thead-dark">
-  
+
             <tr>
                 <th>Email</th>
                 <th>Name</th>
                 <th>Created</th>
                 <th>Super User</th>
                 <th>Verified</th>
- 
+
                 <th>Options </th>
 
             </tr>
@@ -38,17 +38,15 @@ Users
                 <td>{{.IsSuperUser | yesNo}} </td>
 
                 <td>{{.HasVerified | yesNo}} </td>
-                 
+
 
                 <td>
 
-                    <a class="btn btn-ghost-info  " href='/users/edit/{{.ID}}'>   
-                        <svg class="c-icon">
-                        <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-pencil"></use>
-                    </svg>
+                    <a class="btn btn-ghost-info  " href='/users/edit/{{.ID}}'>
+                        <i class="bi bi-pencil"></i>
                   </a>
                     <a class="btn btn-danger" href='/users/delete/{{.ID}}'>Delete</a>
-                     
+
 
 
                 </td>
@@ -68,8 +66,9 @@ Users
 
 {{define "aftercontent"}}
 
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css">
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
     $(document).ready(function () {

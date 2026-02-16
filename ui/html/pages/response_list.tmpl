@@ -9,8 +9,8 @@ Responses
   <div class="col">
     <div class="card ">
       <div class="card-header">
-        <p class="h5">Responses 
-          <a class="btn btn-ghost-info float-right" href="/epr/{{$.EndPoint.ID}}/add">+Add</a>
+        <p class="h5">Responses
+          <a class="btn btn-ghost-info float-end" href="/epr/{{$.EndPoint.ID}}/add">+Add</a>
 
         </p>
         <small>Use 'DEFAULT' as name to define a default response.</small>
@@ -19,7 +19,7 @@ Responses
 
 
 
-          <table id="responselist"       
+          <table id="responselist"
           class="table   table-borderless table-responsive-sm table-striped    ">
             <thead class="thead-dark">
               <tr>
@@ -45,19 +45,16 @@ Responses
 
                 <td>
 
-                  <a data-toggle="tooltip" data-placement="bottom" title="Edit" class="btn btn-ghost-info" href='/epr/{{$.EndPoint.ID}}/update/{{.ID}}'>                  <svg class="c-icon">
-                    <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-pencil"></use></svg></a>
-
-                 
-                      
-                  <a data-toggle="tooltip" data-placement="bottom" title="Delete" class="btn btn-ghost-danger" href='/epr/{{$.EndPoint.ID}}/delete/{{.ID}}'>                  <svg class="c-icon">
-                    <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-trash"></use></svg></a>
+                  <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit" class="btn btn-ghost-info" href='/epr/{{$.EndPoint.ID}}/update/{{.ID}}'><i class="bi bi-pencil"></i></a>
 
 
-                    <a data-toggle="tooltip" data-placement="bottom" title="Response parameters" class="btn btn-ghost-info" href='/responseparam/{{$.EndPoint.ID}}/{{.ID}}/'>                  <svg class="c-icon">
-                      <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-list"></use></svg></a>
-  
-                   
+
+                  <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete" class="btn btn-ghost-danger" href='/epr/{{$.EndPoint.ID}}/delete/{{.ID}}'><i class="bi bi-trash"></i></a>
+
+
+                    <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Response parameters" class="btn btn-ghost-info" href='/responseparam/{{$.EndPoint.ID}}/{{.ID}}/'><i class="bi bi-list-ul"></i></a>
+
+
                 </td>
 
               </tr>
@@ -75,8 +72,10 @@ Responses
 
   {{define "aftercontent"}}
 
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css">
   <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js">
+  </script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js">
   </script>
 
   <script>

@@ -11,8 +11,8 @@ EndPoint
                 <p class="h5">
                     {{if .Form.ID}} Edit {{else}} Add {{end}} EndPoint
                     {{if .Form.ID}} 
-                    <a id="manageresp"  data-toggle="tooltip" data-placement="bottom" title="Manage Responses"
-                    class="btn btn-ghost-info float-right" href="/epr/{{.Form.ID}}">Manage Responses</a></p>
+                    <a id="manageresp"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="Manage Responses"
+                    class="btn btn-ghost-info float-end" href="/epr/{{.Form.ID}}">Manage Responses</a></p>
                     {{end}}
                 </p>
             </div>
@@ -336,8 +336,7 @@ EndPoint
                         <br />
                         <br />
 
-                    <button type="submit" class="btn btn-info">                  <svg class="c-icon">
-                        <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-check-alt"></use></svg>
+                    <button type="submit" class="btn btn-info"><i class="bi bi-check-lg"></i>
                         Submit</button>
                 </form>
             </div>

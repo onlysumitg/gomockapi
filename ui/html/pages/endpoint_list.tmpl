@@ -11,8 +11,8 @@ EndPoints
     <div class="card ">
       <div class="card-header">
         <p class="h5">EndPoints {{if .Collection}} for collection {{.Collection.Name}} {{end}}
-          <a id="addnewep" data-toggle="tooltip" data-placement="bottom" title="Add new endpoint"
-           class="btn btn-ghost-info float-right" href="/endpoints/add{{if .Collection}}?cid={{.Collection.ID}}{{end}}">+Add</a></p>
+          <a id="addnewep" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add new endpoint"
+           class="btn btn-ghost-info float-end" href="/endpoints/add{{if .Collection}}?cid={{.Collection.ID}}{{end}}">+Add</a></p>
       </div>
       <div class="card-body">
         <table id="endpointlist"
@@ -24,7 +24,7 @@ EndPoints
 
               <th>Name</th>
               <th>Method</th>
-               
+
               <th>Created</th>
               <th>Options </th>
 
@@ -38,7 +38,7 @@ EndPoints
               <td>{{.CollectionID|collectionname}}</td>
               <td>{{.Name}}</td>
               <td>{{.Method}}</td>
-           
+
 
               <td>{{.CreatedBy}} <br> {{.CreatedOn | humanDate}}</td>
 
@@ -47,21 +47,16 @@ EndPoints
 
               <td>
 
-                <a data-toggle="tooltip" data-placement="bottom" title="Manage" class="btn btn-ghost-info  " 
+                <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Manage" class="btn btn-ghost-info  "
                 href='/endpoints/update/{{.ID}}'
-                >   
-                  <svg class="c-icon">
-                  <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-pencil"></use>
-              </svg>
+                >
+                  <i class="bi bi-pencil"></i>
             </a>
 
-            <a data-toggle="tooltip" data-placement="bottom" title="Make a copy" class="btn btn-ghost-info" href='/endpoints/copy/{{.ID}}'>                  <svg class="c-icon">
-              <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-copy"></use></svg></a>
+            <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Make a copy" class="btn btn-ghost-info" href='/endpoints/copy/{{.ID}}'><i class="bi bi-copy"></i></a>
 
 
-                <a data-toggle="tooltip" data-placement="bottom" title="delete" class="btn btn-ghost-danger  " href='/endpoints/delete/{{.ID}}'><svg class="c-icon">
-                  <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-trash"></use>
-              </svg></a>
+                <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="delete" class="btn btn-ghost-danger  " href='/endpoints/delete/{{.ID}}'><i class="bi bi-trash"></i></a>
 
 
               </td>
@@ -71,7 +66,7 @@ EndPoints
             {{end}}
           </tbody>
         </table>
- 
+
       </div>
     </div>
   </div>
@@ -81,8 +76,10 @@ EndPoints
 
     {{define "aftercontent"}}
 
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js">
+    </script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js">
     </script>
 
     <script>
@@ -101,9 +98,9 @@ EndPoints
 
 
         introJs().setOptions({
-  steps: [ 
+  steps: [
 
-  { 
+  {
     title:"Need a new Endpoint?",
     element: document.querySelector('#addnewep'),
     intro: 'Click here to add one.'

@@ -1,0 +1,364 @@
+/* ============================================
+   GoMockAPI - Custom Layout & Theme
+   Replaces CoreUI Pro stylesheet
+   ============================================ */
+
+/* --- CSS Custom Properties (Theme) --- */
+:root {
+  --color-primary: #2563EB;
+  --color-secondary: #64748B;
+  --color-success: #16A34A;
+  --color-danger: #DC2626;
+  --color-warning: #F59E0B;
+  --color-info: #0EA5E9;
+
+  --sidebar-bg: #1E293B;
+  --sidebar-text: #94A3B8;
+  --sidebar-hover-bg: rgba(255,255,255,0.08);
+  --sidebar-active-bg: rgba(255,255,255,0.12);
+  --sidebar-width: 256px;
+
+  --page-bg: #F1F5F9;
+  --card-bg: #FFFFFF;
+  --card-border: #E2E8F0;
+  --body-text: #334155;
+
+  --header-height: 56px;
+}
+
+/* --- Bootstrap 5 Theme Color Overrides --- */
+[data-bs-theme] {
+  --bs-primary: var(--color-primary);
+  --bs-secondary: var(--color-secondary);
+  --bs-success: var(--color-success);
+  --bs-danger: var(--color-danger);
+  --bs-warning: var(--color-warning);
+  --bs-info: var(--color-info);
+}
+
+/* --- Base --- */
+body {
+  background-color: var(--page-bg);
+  color: var(--body-text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+a:hover {
+  color: #1D4ED8;
+  text-decoration: underline;
+}
+
+/* --- Sidebar --- */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-width);
+  background-color: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 1030;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  height: var(--header-height);
+}
+.sidebar-brand a,
+.sidebar-brand h5 {
+  color: #FFFFFF;
+  margin: 0;
+  text-decoration: none;
+  font-weight: 600;
+}
+.sidebar-brand a:hover {
+  text-decoration: none;
+}
+
+/* --- Sidebar Nav --- */
+.sidebar-nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-nav-item {
+  list-style: none;
+}
+
+.sidebar-nav-link {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 1.25rem;
+  color: var(--sidebar-text);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  gap: 0.5rem;
+}
+.sidebar-nav-link:hover {
+  background-color: var(--sidebar-hover-bg);
+  color: #FFFFFF;
+  text-decoration: none;
+}
+.sidebar-nav-link.active {
+  background-color: var(--sidebar-active-bg);
+  color: #FFFFFF;
+}
+.sidebar-nav-link i {
+  font-size: 1.1rem;
+  width: 1.5rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.sidebar-nav-title {
+  list-style: none;
+  padding: 1rem 1.25rem 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--sidebar-text);
+  opacity: 0.7;
+}
+
+.sidebar-nav-divider {
+  list-style: none;
+  height: 0;
+  margin: 0.5rem 1.25rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Heavy divider between endpoint section and app nav */
+.sidebar-section-divider {
+  list-style: none;
+  height: 0;
+  margin: 0.75rem 0;
+  border-top: 2px solid rgba(255,255,255,0.2);
+}
+
+/* Endpoint name highlight in sidebar */
+.sidebar-endpoint-name {
+  color: #FFFFFF !important;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* --- App Header --- */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+  background-color: #FFFFFF;
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.app-header .header-toggler {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  color: var(--body-text);
+  font-size: 1.25rem;
+  cursor: pointer;
+  display: none;
+}
+.app-header .header-nav {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  gap: 0.75rem;
+}
+
+/* --- App Content Wrapper --- */
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  min-height: 100vh;
+  transition: margin-left 0.3s ease;
+}
+
+.app-content {
+  flex: 1;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* --- App Footer --- */
+.app-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background-color: #FFFFFF;
+  border-top: 1px solid var(--card-border);
+  font-size: 0.85rem;
+  color: var(--color-secondary);
+}
+
+/* --- Cards --- */
+.card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.card-header {
+  background-color: transparent;
+  border-bottom: 1px solid var(--card-border);
+  padding: 1rem 1.25rem;
+}
+
+/* --- Ghost Buttons --- */
+.btn-ghost-primary {
+  background-color: transparent;
+  color: var(--color-primary);
+  border: none;
+}
+.btn-ghost-primary:hover {
+  background-color: rgba(37,99,235,0.1);
+  color: var(--color-primary);
+}
+
+.btn-ghost-info {
+  background-color: transparent;
+  color: var(--color-info);
+  border: none;
+}
+.btn-ghost-info:hover {
+  background-color: rgba(14,165,233,0.1);
+  color: var(--color-info);
+}
+
+.btn-ghost-danger {
+  background-color: transparent;
+  color: var(--color-danger);
+  border: none;
+}
+.btn-ghost-danger:hover {
+  background-color: rgba(220,38,38,0.1);
+  color: var(--color-danger);
+}
+
+.btn-ghost-success {
+  background-color: transparent;
+  color: var(--color-success);
+  border: none;
+}
+.btn-ghost-success:hover {
+  background-color: rgba(22,163,74,0.1);
+  color: var(--color-success);
+}
+
+/* --- Override Bootstrap primary --- */
+.btn-primary {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.btn-primary:hover {
+  background-color: #1D4ED8;
+  border-color: #1D4ED8;
+}
+.btn-danger {
+  background-color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+.btn-info {
+  background-color: var(--color-info);
+  border-color: var(--color-info);
+  color: #FFFFFF;
+}
+.btn-info:hover {
+  color: #FFFFFF;
+}
+.btn-success {
+  background-color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+/* --- Responsive --- */
+@media (max-width: 991.98px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  .sidebar.show {
+    transform: translateX(0);
+  }
+  .app-wrapper {
+    margin-left: 0;
+  }
+  .app-header .header-toggler {
+    display: inline-flex;
+  }
+}
+
+/* Sidebar backdrop on mobile */
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0,0,0,0.4);
+  z-index: 1025;
+}
+.sidebar-backdrop.show {
+  display: block;
+}
+
+/* --- Table refinements --- */
+.table thead.thead-dark th {
+  background-color: var(--sidebar-bg);
+  color: #FFFFFF;
+  border-color: var(--sidebar-bg);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* --- Tooltip fix for BS5 --- */
+.tooltip {
+  font-size: 0.8rem;
+}
+
+/* --- Account pages (centered card layout) --- */
+.account-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--page-bg);
+}
+
+/* --- Forms (BS5 dropped form-group styling) --- */
+.form-group {
+  margin-bottom: 1rem;
+}
+.form-group label {
+  margin-bottom: 0.375rem;
+  font-weight: 500;
+}
+.form-group .form-text {
+  margin-top: 0.25rem;
+  font-size: 0.85rem;
+}
+
+/* --- Misc --- */
+.text-muted {
+  color: var(--color-secondary) !important;
+}

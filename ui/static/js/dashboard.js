@@ -1,9 +1,7 @@
-/* globals Chart:false, feather:false */
+/* globals Chart:false */
 
 (function () {
   'use strict'
-
-  feather.replace({ 'aria-hidden': 'true' })
 
   // Graphs
   var ctx = document.getElementById('myChart')
@@ -32,9 +30,9 @@
         ],
         lineTension: 0,
         backgroundColor: 'transparent',
-        borderColor: '#007bff',
+        borderColor: '#2563EB',
         borderWidth: 4,
-        pointBackgroundColor: '#007bff'
+        pointBackgroundColor: '#2563EB'
       }]
     },
     options: {

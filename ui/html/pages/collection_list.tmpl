@@ -8,7 +8,7 @@ Collections
     <div class="col">
         <div class="card ">
             <div class="card-header">
-                <p class="h5">Collections <a class="btn btn-ghost-info float-right" href="/collections/add">+Add</a></p>
+                <p class="h5">Collections <a class="btn btn-ghost-info float-end" href="/collections/add">+Add</a></p>
             </div>
             <div class="card-body">
                 <table id="collectionlist" class="table   table-borderless table-responsive-sm table-striped    ">
@@ -36,38 +36,27 @@ Collections
 
                             <td>
 
-                                <a class="btn btn-ghost-primary" data-toggle="tooltip" data-placement="bottom"
+                                <a class="btn btn-ghost-primary" data-bs-toggle="tooltip" data-bs-placement="bottom"
                                 title="Endpoints" href='/endpoints?cid={{.ID}}'>
-                                <svg class="c-icon mfe-2">
-                                    <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-list">
-                                    </use>
-                                </svg>
+                                <i class="bi bi-list-ul me-2"></i>
                             </a>
 
                                 <a class="btn btn-ghost-info  " href='/collections/edit/{{.ID}}'>
-                                    <svg class="c-icon">
-                                        <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-pencil">
-                                        </use>
-                                    </svg>
+                                    <i class="bi bi-pencil"></i>
                                 </a>
 
 
 
 
-
-
-                                <a class="btn btn-ghost-danger" data-toggle="tooltip" data-placement="bottom"
+                                <a class="btn btn-ghost-danger" data-bs-toggle="tooltip" data-bs-placement="bottom"
                                     title="Delete" href='/collections/delete/{{.ID}}'>
-                                    <svg class="c-icon mfe-2">
-                                        <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-trash">
-                                        </use>
-                                    </svg>
+                                    <i class="bi bi-trash me-2"></i>
                                 </a>
 
 
-                             
 
-                               
+
+
 
 
 
@@ -89,8 +78,9 @@ Collections
 
 {{define "aftercontent"}}
 
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css">
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
     $(document).ready(function () {

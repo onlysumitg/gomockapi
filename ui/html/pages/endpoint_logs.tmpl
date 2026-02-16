@@ -20,9 +20,8 @@ EndPoints
             <tr>
               <th>ID</th>
               <th>Called At</th>
-            
 
-            
+
 
             </tr>
           </thead>
@@ -34,22 +33,19 @@ EndPoints
               <td>
                 <a href="/apilogs/{{.CorellationID}}">
                 {{.CorellationID}}</a>
-              
+
               </td>
               <td>{{.CalledAt}}</td>
-              
 
 
 
-
-              
 
             </tr>
             {{end}}
             {{end}}
           </tbody>
         </table>
- 
+
       </div>
     </div>
   </div>
@@ -59,8 +55,10 @@ EndPoints
 
     {{define "aftercontent"}}
 
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js">
+    </script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js">
     </script>
 
     <script>

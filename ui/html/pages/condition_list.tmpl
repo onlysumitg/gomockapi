@@ -10,7 +10,7 @@ GoMockAPI
     <div class="card ">
       <div class="card-header">
         <p class="h5">Conditions
-          <a class="btn btn-ghost-info float-right" href="/conditions/{{$.EndPoint.ID}}/add">+Add</a>
+          <a class="btn btn-ghost-info float-end" href="/conditions/{{$.EndPoint.ID}}/add">+Add</a>
 
         </p>
         <p><small>Add conditions based on "Request parameter". "Condition actions" use these conditions to modify the
@@ -20,7 +20,7 @@ GoMockAPI
 
 
 
-          <table id="conditionlist"       
+          <table id="conditionlist"
           class="table   table-borderless table-responsive-sm table-striped    ">
             <thead class="thead-dark">
               <tr>
@@ -48,16 +48,13 @@ GoMockAPI
 
 
 
-
                 <td>
 
-                  <a data-toggle="tooltip" data-placement="bottom" title="Edit" class="btn btn-ghost-info" href='/conditions/{{$.EndPoint.ID}}/update/{{.ID}}'>                  <svg class="c-icon">
-                    <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-pencil"></use></svg></a>
+                  <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit" class="btn btn-ghost-info" href='/conditions/{{$.EndPoint.ID}}/update/{{.ID}}'><i class="bi bi-pencil"></i></a>
 
-                 
-                      
-                  <a data-toggle="tooltip" data-placement="bottom" title="Delete" class="btn btn-ghost-danger" href='/conditions/{{$.EndPoint.ID}}/delete/{{.ID}}'>                  <svg class="c-icon">
-                    <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-trash"></use></svg></a>
+
+
+                  <a data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete" class="btn btn-ghost-danger" href='/conditions/{{$.EndPoint.ID}}/delete/{{.ID}}'><i class="bi bi-trash"></i></a>
 
                 </td>
 
@@ -76,8 +73,10 @@ GoMockAPI
 
   {{define "aftercontent"}}
 
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css">
   <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js">
+  </script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js">
   </script>
 
   <script>

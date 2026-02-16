@@ -1,106 +1,51 @@
 {{define "editpointoptions"}}
 
 {{if .Name}}
- 
-
-
-<li class="c-sidebar-nav-title">EndPoint: 
+<li class="sidebar-nav-title">Endpoint:</li>
+<li class="sidebar-nav-item">
+  <a class="sidebar-nav-link sidebar-endpoint-name">{{.Name}}</a>
 </li>
-        
-<li class="c-sidebar-nav-item">
-  <a class="c-sidebar-nav-link" >{{.Name}}</a>
-
-    
- 
-
-</li>
-
 {{end}}
 
-<li class="c-sidebar-nav-item">
-      
-
-    <a class="c-sidebar-nav-link" href='/endpoints/update/{{.ID}}' >
-        <svg class="c-icon mfe-2">
-            <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-pencil"></use>
-        </svg>
-    
-        Edit</a>
+<li class="sidebar-nav-item">
+    <a class="sidebar-nav-link" href='/endpoints/update/{{.ID}}'>
+        <i class="bi bi-pencil me-2"></i>Edit</a>
+</li>
+<li class="sidebar-nav-item">
+    <a id="responsemenu" class="sidebar-nav-link" href='/epr/{{.ID}}'>
+        <i class="bi bi-arrow-left me-2"></i>Responses</a>
+</li>
+<li class="sidebar-nav-item">
+    <a id="requestparammenu" class="sidebar-nav-link" href='/requestparam/{{.ID}}'>
+        <i class="bi bi-arrow-right me-2"></i>Request Params</a>
 </li>
 
-<li class="c-sidebar-nav-divider"></li>
+<li class="sidebar-nav-divider"></li>
 
+<li class="sidebar-nav-item">
+    <a id="conditionsmenu" class="sidebar-nav-link" href='/conditions/{{.ID}}'>
+        <i class="bi bi-check-lg me-2"></i>Conditions</a>
+</li>
+<li class="sidebar-nav-item">
+    <a id="conditionactionsmenu" class="sidebar-nav-link" href='/conditiongroups/{{.ID}}'>
+        <i class="bi bi-check-circle me-2"></i>Condition Actions</a>
+</li>
 
-<li class="c-sidebar-nav-item">
-    <a id="responsemenu" class="c-sidebar-nav-link" href='/epr/{{.ID}}'  >
-        <svg class="c-icon mfe-2">
-            <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-arrow-left"></use>
-        </svg>
-        
-        Responses</a>
- </li>
+<li class="sidebar-nav-divider"></li>
 
+<li class="sidebar-nav-item">
+    <a class="sidebar-nav-link" href='/endpoints/logs/{{.ID}}'>
+        <i class="bi bi-chat-left-text me-2"></i>Logs</a>
+</li>
+<li class="sidebar-nav-item">
+    <a class="sidebar-nav-link" href='/endpoints/delete/{{.ID}}'>
+        <i class="bi bi-trash me-2"></i>Delete</a>
+</li>
+<li class="sidebar-nav-item">
+    <a class="sidebar-nav-link" href='/endpoints/owners/{{.ID}}'>
+        <i class="bi bi-person me-2"></i>Owners</a>
+</li>
 
-<li class="c-sidebar-nav-item">
-    <a  id="requestparammenu"  class="c-sidebar-nav-link" href='/requestparam/{{.ID}}'  >
-        <svg class="c-icon mfe-2">
-            <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-arrow-right"></use>
-        </svg>
-        
-        Request Params</a>
- </li>
+<li class="sidebar-section-divider"></li>
 
- 
- 
- 
-<li class="c-sidebar-nav-divider"></li>
-
-<li class="c-sidebar-nav-item">
-    <a  id="conditionsmenu" class="c-sidebar-nav-link" href='/conditions/{{.ID}}'  >
-        
-        <svg class="c-icon mfe-2">
-            <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-check-alt"></use>
-        </svg>Conditions</a>
- </li>
-
- <li class="c-sidebar-nav-item">
-    <a  id="conditionactionsmenu"  class="c-sidebar-nav-link" href='/conditiongroups/{{.ID}}'  >
-        
-        <svg class="c-icon mfe-2">
-            <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-check-circle"></use>
-        </svg>Condition Actions</a>
- </li>
-
-
- <li class="c-sidebar-nav-divider"></li>
- <li class="c-sidebar-nav-item">
-      
-    <a class="c-sidebar-nav-link" href='/endpoints/logs/{{.ID}}' >
-        <svg class="c-icon mfe-2">
-            <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-speech"></use>
-        </svg>
-    
-        Logs</a>
-    </li>
-    
-    <li class="c-sidebar-nav-item">
-        <a class="c-sidebar-nav-link" href='/endpoints/delete/{{.ID}}' >
-             
-              <svg class="c-icon mfe-2">
-                <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-trash"></use>
-            </svg>
-    
-            Delete</a>
-     </li>
- <li class="c-sidebar-nav-item">
-    <a class="c-sidebar-nav-link" href='/endpoints/owners/{{.ID}}'  >
-        
-        <svg class="c-icon mfe-2">
-            <use xlink:href="/static/coreui/vendors/coreui/icons/svg/free.svg#cil-user"></use>
-        </svg>Owners</a>
- </li>
- <hr>
- <li class="c-sidebar-nav-item">    <a class="c-sidebar-nav-link" >------------</a></li>
-
- 
 {{end}}
