@@ -474,6 +474,11 @@ func (app *application) ReadPostmantJson(filename string, currentUser *models.Us
 
 	}
 
+	// The import writes endpoints straight through the model, bypassing the
+	// endpoint handlers that would otherwise invalidate. Without this the
+	// imported endpoints stay invisible to /api until something else does.
+	app.invalidateEndPointCache()
+
 	return messageList
 }
 

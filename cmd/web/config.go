@@ -77,6 +77,10 @@ func baseAppConfig(params parameters, db *bolt.DB, logdb *bolt.DB) *application 
 		infoLog:       infoLog,
 		endPointCache: endPointCache,
 
+		// The cache starts empty, so it must be treated as stale until the
+		// first lookup builds it. Otherwise every endpoint would 404.
+		invalidEndPointCache: true,
+
 		DB:          db,
 		LogDB:       logdb,
 		EmailServer: models.SetupMailServer(),

@@ -482,6 +482,7 @@ func (app *application) makeCopy(w http.ResponseWriter, r *http.Request) {
 	e.ID = ""
 	e.Name = fmt.Sprintf("%s_%s", e.Name, stringutils.RandomString(6))
 	id, _ := app.endpoints.Save(e, user.Email)
+	app.invalidateEndPointCache()
 
 	user.AssignOwnedEndPoint(id)
 	app.users.Save(user, false)

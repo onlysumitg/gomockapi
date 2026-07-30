@@ -30,7 +30,14 @@ func (app *application) GetEndPoint(collection, endpointname, httpmethod string)
 	stale := app.invalidEndPointCache
 	app.endPointMutex.RUnlock()
 
-	if found && !stale {
+	if !stale {
+		// The cache mirrors the database until something invalidates it, so a
+		// miss here is a real miss and rebuilding would not turn it into a hit.
+		// Rebuilding anyway meant every request for an unknown name re-read
+		// every endpoint and all of its params from BoltDB.
+		if !found {
+			return nil, endPointNotFoundError(collection, endpointname, httpmethod)
+		}
 		return endPoint, nil
 	}
 
@@ -39,18 +46,21 @@ func (app *application) GetEndPoint(collection, endpointname, httpmethod string)
 
 	// Another goroutine may have rebuilt the cache while we waited for the lock,
 	// in which case there is nothing left to do.
-	endPoint, found = app.endPointCache[endPointKey]
-	if !found || app.invalidEndPointCache {
+	if app.invalidEndPointCache {
 		app.endPointCache = app.endpoints.BuildEndPointCache(app.maxAllowedEndPoints)
-		endPoint, found = app.endPointCache[endPointKey]
 		app.invalidEndPointCache = false
 	}
 
+	endPoint, found = app.endPointCache[endPointKey]
 	if !found {
-		return nil, fmt.Errorf("not found: %s %s %s", collection, endpointname, httpmethod)
+		return nil, endPointNotFoundError(collection, endpointname, httpmethod)
 	}
 
 	return endPoint, nil
+}
+
+func endPointNotFoundError(collection, endpointname, httpmethod string) error {
+	return fmt.Errorf("not found: %s %s %s", collection, endpointname, httpmethod)
 }
 
 // cachedEndPoints returns a snapshot of the currently cached endpoints, safe to
