@@ -316,7 +316,7 @@ func (app *application) userSignupPost(w http.ResponseWriter, r *http.Request) {
 	}
 	go func() {
 		emailRequest := app.users.BuildVerificationEmail(user, app.hostURL)
-		app.SendEmail(emailRequest)
+		_ = app.SendEmail(emailRequest) // logged inside; a mail failure must not abort the flow
 	}()
 
 	nextUrl := r.URL.Query().Get("next")
@@ -552,7 +552,7 @@ func (app *application) userLoginTrouble(w http.ResponseWriter, r *http.Request)
 					user, err := app.users.GetByEmail(form.Email)
 					if err == nil {
 						emailRequest := app.users.BuildVerificationEmail(user, app.hostURL)
-						app.SendEmail(emailRequest)
+						_ = app.SendEmail(emailRequest) // logged inside; a mail failure must not abort the flow
 					}
 				}()
 
@@ -562,7 +562,7 @@ func (app *application) userLoginTrouble(w http.ResponseWriter, r *http.Request)
 					user, err := app.users.GetByEmail(form.Email)
 					if err == nil {
 						emailRequest := app.users.BuildPasswordEmail(user, app.hostURL)
-						app.SendEmail(emailRequest)
+						_ = app.SendEmail(emailRequest) // logged inside; a mail failure must not abort the flow
 					}
 				}()
 			}

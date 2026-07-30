@@ -1,8 +1,6 @@
 package main
 
 import (
-	"log"
-
 	"github.com/onlysumitg/GoMockAPI/internal/models"
 	mail "github.com/xhit/go-simple-mail/v2"
 )
@@ -24,15 +22,21 @@ import (
 // ------------------------------------------------------
 //
 // ------------------------------------------------------
-func (app *application) SendEmail(r *models.EmailRequest) {
+// SendEmail delivers r, returning any failure to the caller.
+//
+// It must never terminate the process: it runs on background goroutines spawned
+// by request handlers, so exiting here would take the whole mock server down
+// whenever SMTP is unreachable or unconfigured.
+func (app *application) SendEmail(r *models.EmailRequest) error {
 
 	if r == nil {
-		return
+		return nil
 	}
 
 	smtpClient, err := app.EmailServer.Connect()
 	if err != nil {
-		log.Fatal(err)
+		app.errorLog.Printf("email: connecting to %s:%d failed: %v", app.EmailServer.Host, app.EmailServer.Port, err)
+		return err
 	}
 
 	// Create email
@@ -57,6 +61,9 @@ func (app *application) SendEmail(r *models.EmailRequest) {
 	// Send email
 	err = email.Send(smtpClient)
 	if err != nil {
-		log.Fatal(err)
+		app.errorLog.Printf("email: sending %q to %v failed: %v", r.Subject, r.To, err)
+		return err
 	}
+
+	return nil
 }
