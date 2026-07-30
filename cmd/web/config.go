@@ -19,7 +19,8 @@ type application struct {
 	tlsCertificate *tls.Certificate
 	tlsMutex       sync.Mutex
 
-	endPointMutex        sync.Mutex
+	// endPointMutex guards both endPointCache and invalidEndPointCache.
+	endPointMutex        sync.RWMutex
 	invalidEndPointCache bool
 
 	errorLog *log.Logger

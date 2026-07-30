@@ -41,7 +41,7 @@ func (app *application) SendEmail(r *models.EmailRequest) error {
 
 	// Create email
 	email := mail.NewMSG()
-	email.SetFrom("gomockapi@zerobit.tech")
+	email.SetFrom("gomockapi@examplecom")
 	email.AddTo(r.To...)
 	//email.AddCc("another_you@example.com")
 	email.SetSubject(r.Subject)

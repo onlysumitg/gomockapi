@@ -80,11 +80,14 @@ func (app *application) EndpointsToPostmanCollection() *postman.Collection {
 	c := postman.CreateCollection(fmt.Sprintf("GoMockAPI"), "GOMockAPI Postman collection")
 	c.Variables = make([]*postman.Variable, 0)
 
-	for _, ep := range app.endPointCache {
-		if ep.CollectionName == "" {
-			ep.CollectionName = "V1"
+	// Snapshot rather than ranging over the live cache, and keep the fallback
+	// name local: these endpoints are shared with in-flight requests.
+	for _, ep := range app.cachedEndPoints() {
+		collectionName := ep.CollectionName
+		if collectionName == "" {
+			collectionName = "V1"
 		}
-		folder := c.AddItemGroup(ep.CollectionName)
+		folder := c.AddItemGroup(collectionName)
 
 		folder.AddItem(app.EndPointToItem(ep))
 
