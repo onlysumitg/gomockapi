@@ -95,7 +95,15 @@ func HttpDELETE(url string, header http.Header, requestPayLoad []byte) *HttpCall
 func HttpProcessRequest(req *http.Request) *HttpCallResult {
 	httpCallResult := &HttpCallResult{}
 
-	req.Header.Set("Content-Type", "application/json")
+	if req.Header == nil {
+		req.Header = make(http.Header)
+	}
+
+	// Only supply a Content-Type when the caller forwarded none. Overwriting it
+	// unconditionally mislabelled XML endpoints as JSON upstream.
+	if req.Header.Get("Content-Type") == "" {
+		req.Header.Set("Content-Type", "application/json")
+	}
 
 	client := http.Client{
 		Timeout: 30 * time.Second,

@@ -102,11 +102,18 @@ func (app *application) writeJSONorXML(responseType string, w http.ResponseWrite
 	for key, value := range headers {
 		w.Header()[key] = value
 	}
-	// Add the "Content-Type: application/json" header, then write the status code and
-	// JSON response.
-	if strings.EqualFold(responseType, "TEXT") {
+	// Derive the Content-Type from the configured response type. When there is
+	// none - a proxied response, where the body came from the upstream service -
+	// keep whatever Content-Type the headers above supplied rather than
+	// emitting a bare "application/".
+	switch {
+	case strings.EqualFold(responseType, "TEXT"):
 		w.Header().Set("Content-Type", "text/plain")
-	} else {
+	case strings.TrimSpace(responseType) == "":
+		if w.Header().Get("Content-Type") == "" {
+			w.Header().Set("Content-Type", "application/octet-stream")
+		}
+	default:
 		w.Header().Set("Content-Type", fmt.Sprintf("application/%s", strings.ToLower(responseType)))
 	}
 	w.WriteHeader(status)
