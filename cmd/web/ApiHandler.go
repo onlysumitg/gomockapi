@@ -339,7 +339,7 @@ func (app *application) ProcessAPICall(w http.ResponseWriter, r *http.Request, c
 // ------------------------------------------------------
 
 func (app *application) clearapilogs(w http.ResponseWriter, r *http.Request) {
-	models.ClearLogs(app.DB)
+	models.ClearLogs(app.DB, app.LogDB)
 	app.sessionManager.Put(r.Context(), "flash", "Api logs has been cleared")
 
 	app.goBack(w, r, http.StatusSeeOther)

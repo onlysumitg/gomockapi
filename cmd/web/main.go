@@ -126,7 +126,7 @@ func (app *application) clearLogsSchedular(db *bolt.DB) {
 	s := gocron.NewScheduler(time.Local)
 
 	s.Every(1).Day().At("21:30").Do(func() {
-		models.DailyDataCleanup(db)
+		models.DailyDataCleanup(db, app.LogDB)
 	})
 	s.StartAsync()
 
