@@ -6,6 +6,7 @@ import (
 
 	"github.com/alexedwards/scs/boltstore"
 	"github.com/alexedwards/scs/v2"
+	"github.com/onlysumitg/GoMockAPI/env"
 	bolt "go.etcd.io/bbolt"
 )
 
@@ -20,7 +21,11 @@ func getSessionManager(db *bolt.DB) *scs.SessionManager {
 	sessionManager.Store = boltstore.NewWithCleanupInterval(db, 200*time.Second)
 	sessionManager.Cookie.Persist = true
 	sessionManager.Cookie.SameSite = http.SameSiteLaxMode
-	//sessionManager.Cookie.Secure = app.InProduction
+
+	// Keep the session cookie off plaintext connections when the app is serving
+	// HTTPS. Tied to the same setting that decides how the server listens, so
+	// local HTTP development still works.
+	sessionManager.Cookie.Secure = env.UseHttps()
 
 	// 	sessionManager.Lifetime = 3 * time.Hour
 	// sessionManager.IdleTimeout = 20 * time.Minute
