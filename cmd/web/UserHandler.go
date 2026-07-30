@@ -319,10 +319,7 @@ func (app *application) userSignupPost(w http.ResponseWriter, r *http.Request) {
 		_ = app.SendEmail(emailRequest) // logged inside; a mail failure must not abort the flow
 	}()
 
-	nextUrl := r.URL.Query().Get("next")
-	if nextUrl == "" {
-		nextUrl = app.appLangingPage()
-	}
+	nextUrl := safeRedirectTarget(r.URL.Query().Get("next"), app.appLangingPage())
 
 	app.sessionManager.Put(r.Context(), "flash", "Please check your email.")
 
@@ -386,10 +383,7 @@ func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
 	// 'logged in'.
 	app.sessionManager.Put(r.Context(), "authenticatedUserID", user.ID)
 
-	nextUrl := r.URL.Query().Get("next")
-	if nextUrl == "" {
-		nextUrl = app.appLangingPage()
-	}
+	nextUrl := safeRedirectTarget(r.URL.Query().Get("next"), app.appLangingPage())
 	http.Redirect(w, r, nextUrl, http.StatusSeeOther)
 }
 

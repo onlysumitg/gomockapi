@@ -79,10 +79,7 @@ func (app *application) userAdd(w http.ResponseWriter, r *http.Request) {
 			}
 			_ = app.users.Save(user, true)
 
-			nextUrl := r.URL.Query().Get("next")
-			if nextUrl == "" {
-				nextUrl = "/users"
-			}
+			nextUrl := safeRedirectTarget(r.URL.Query().Get("next"), "/users")
 			http.Redirect(w, r, nextUrl, http.StatusSeeOther)
 			return
 		}

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"os/exec"
 	"runtime"
 	"runtime/debug"
@@ -150,6 +151,35 @@ func getTabIds(r *http.Request) (string, string) {
 	}
 
 	return currentTabId, oldTabId
+}
+
+// -----------------------------------------------------------------
+// safeRedirectTarget returns next when it is a path inside this application,
+// and fallback otherwise.
+//
+// next arrives from a query string (?next=...) and is handed to http.Redirect
+// after login, so without this an attacker could bounce a freshly
+// authenticated user to another origin. Rejected: absolute URLs, protocol
+// relative "//host", and the backslash spellings that browsers normalise to
+// slashes.
+// -----------------------------------------------------------------
+func safeRedirectTarget(next string, fallback string) string {
+	next = strings.TrimSpace(next)
+	if next == "" {
+		return fallback
+	}
+
+	normalized := strings.ReplaceAll(next, "\\", "/")
+	if !strings.HasPrefix(normalized, "/") || strings.HasPrefix(normalized, "//") {
+		return fallback
+	}
+
+	u, err := url.Parse(next)
+	if err != nil || u.Scheme != "" || u.Host != "" {
+		return fallback
+	}
+
+	return next
 }
 
 // -----------------------------------------------------------------
