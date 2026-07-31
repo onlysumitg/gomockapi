@@ -73,7 +73,6 @@ func main() {
 	// --------------------------------------- Setup app config and dependency injection ----------------------------
 	app := baseAppConfig(params, db, logdb)
 	routes := app.routes()
-	app.batches()
 
 	//--------------------------------------- Setup websockets ----------------------------
 

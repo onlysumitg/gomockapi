@@ -30,10 +30,8 @@ func (app *application) PostmantHandlers(router *chi.Mux) {
 		r.Use(app.sessionManager.LoadAndSave)
 
 		r.Use(app.RequireAuthentication)
- 
-		r.Get("/", app.fileUploader)
 
-		r.Get("/test", app.PaypalTest)
+		r.Get("/", app.fileUploader)
 
 		r.Get("/d", app.downloadPostmanCollection)
 
@@ -334,20 +332,6 @@ func (app *application) uploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	app.goBack(w, r, http.StatusSeeOther)
-
-}
-
-// -----------------------------------------------------------------------
-//
-// -----------------------------------------------------------------------
-
-func (app *application) PaypalTest(w http.ResponseWriter, r *http.Request) {
-	user, err := app.GetUser(r)
-	if err != nil {
-		app.UnauthorizedError(w, r)
-		return
-	}
-	app.ReadPostmantJson("./uploads/paypal.json", user)
 
 }
 
