@@ -23,10 +23,10 @@ GoMockAPI is a flexible API mocking tool built in Go that allows you to mock RES
 # Installation
 1. Make sure you have Go installed on your system. If not, download it from https://go.dev/dl/
 2. Install gomockapi by running the following command:
-    1. go install github.com/yourusername/gomockapi@latest
+    1. go install github.com/onlysumitg/GoMockAPI/cmd/web@latest
 3. Clone the repository if you want to modify the code:
     ```    
-    git clone https://github.com/yourusername/gomockapi.git
+    git clone https://github.com/onlysumitg/GoMockAPI.git
     ```
 4. To start app
     ```
@@ -42,10 +42,13 @@ pwd: adminpass
 ```
 
 # Env variables
+
+Create `env/.env` (it is not checked in). CORS origins are not configurable;
+they are fixed at `https://*, http://*` in the router.
+
 ```
 PORT=4081
 DOMAIN=myapi.com
-ALLOWEDORIGINS=https://*,http://*
 DEBUG=false
 HTTPS=false
 USELETSENCRYPT=false
