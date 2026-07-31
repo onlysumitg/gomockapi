@@ -239,7 +239,10 @@ func (app *application) ConditionGroupUpdatePost(w http.ResponseWriter, r *http.
 			continue
 		}
 
-		if strings.TrimSpace(mappedParam.AssgineValue) != "" {
+		// Only literals can be type-checked here. REQUEST[...] and *RANDOM:...
+		// are resolved per request, so the expression itself never looks like a
+		// number or a bool even when the value it produces does.
+		if strings.TrimSpace(mappedParam.AssgineValue) != "" && !models.IsDynamicAssignment(mappedParam.AssgineValue) {
 			mappedParam.CheckField(validator.MustBeOfType(mappedParam.AssgineValue, mappedParam.ResponseVariableDatatype), "assignvalue", fmt.Sprintf("Make sure value is compatible with %s", mappedParam.ResponseVariableDatatype))
 			if !mappedParam.Valid() {
 				invalidMappedParams = true
@@ -251,7 +254,11 @@ func (app *application) ConditionGroupUpdatePost(w http.ResponseWriter, r *http.
 
 	if !conditionGroup.Valid() || invalidMappedParams {
 		data := app.newTemplateData(r)
-		conditionGroup.Initialize(endpoint, "")
+		// Re-initialise against the response the user actually picked. An empty
+		// id matches no response, which made RemoveInvalidResponseParam discard
+		// every mapping and hand back a form with all the user's field
+		// assignments gone.
+		conditionGroup.Initialize(endpoint, conditionGroup.ResponseID)
 		data.Form = conditionGroup
 		data.EndPoint = endpoint
 		data.Conditions = app.condition.ListById(endpoint.ID)

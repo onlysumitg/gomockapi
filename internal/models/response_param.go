@@ -36,6 +36,25 @@ type EndPointResponseParam struct {
 }
 
 // -----------------------------------------------------------------
+// IsDynamicAssignment reports whether an assignment is resolved at request time
+// rather than being a literal value.
+//
+// Keep this in step with getValueToUse below, which does the resolving: the two
+// must agree on what counts as dynamic, or values the UI offers get rejected by
+// validation despite working at runtime.
+// -----------------------------------------------------------------
+func IsDynamicAssignment(value string) bool {
+	brokenValues := strings.Split(strings.TrimSpace(value), ":")
+	if len(brokenValues) <= 1 {
+		return false
+	}
+
+	valueSource := strings.TrimSpace(brokenValues[0])
+
+	return strings.HasPrefix(valueSource, "REQUEST[") || strings.HasPrefix(valueSource, "*RANDOM")
+}
+
+// -----------------------------------------------------------------
 //
 // -----------------------------------------------------------------
 func (p *EndPointResponseParam) getValueToUse(requestMap map[string]xmlutils.ValueDatatype, overrideValue string) (any, error) {

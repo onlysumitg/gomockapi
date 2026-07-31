@@ -116,6 +116,25 @@ func csrfToken(t *testing.T, ts *httptest.Server, path string) string {
 	return html.UnescapeString(m[1])
 }
 
+// postFormBody is postForm for cases that need to assert on what was rendered
+// back, such as a form redisplayed with validation errors.
+func postFormBody(t *testing.T, ts *httptest.Server, path string, form url.Values) (int, string) {
+	t.Helper()
+
+	rs, err := ts.Client().Post(ts.URL+path, "application/x-www-form-urlencoded", strings.NewReader(form.Encode()))
+	if err != nil {
+		t.Fatalf("POST %s: %v", path, err)
+	}
+	defer rs.Body.Close()
+
+	body, err := io.ReadAll(rs.Body)
+	if err != nil {
+		t.Fatalf("POST %s: read body: %v", path, err)
+	}
+
+	return rs.StatusCode, string(body)
+}
+
 func postForm(t *testing.T, ts *httptest.Server, path string, form url.Values) (int, string) {
 	t.Helper()
 
