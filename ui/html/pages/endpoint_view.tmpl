@@ -70,27 +70,27 @@ Endpoint detail
                         <td><textarea rows="25" cols="100">{{.EndPoint.SampleRequest}}</textarea></td>
                     </tr>
                
+                    {{range .EndPoint.ResponseMap}}
                     <tr>
-                        <td>Sample response</td>
-                        <td><textarea rows="25" cols="100">{{.EndPoint.SampleResponse}}</textarea></td>
+                        <td>Response &ldquo;{{.Name}}&rdquo; ({{.HttpCode}})</td>
+                        <td><textarea rows="25" cols="100">{{.Response}}</textarea></td>
                     </tr>
 
                     <tr>
-                        <td>Response Placeholder</td>
-                        <td><textarea rows="25" cols="100">{{toJson .EndPoint.ResponsePlaceholder}}</textarea></td>
+                        <td>&nbsp;&nbsp;Placeholder</td>
+                        <td><textarea rows="25" cols="100">{{.ResponsePlaceholder}}</textarea></td>
                     </tr>
 
                     <tr>
-                        <td>Response Header</td>
-                        <td><textarea rows="25" cols="100">{{toJson .EndPoint.SampleResponseHeader}}</textarea></td>
+                        <td>&nbsp;&nbsp;Header</td>
+                        <td><textarea rows="25" cols="100">{{.ResponseHeader}}</textarea></td>
                     </tr>
-
 
                     <tr>
-                        <td>Response Header Placeholder</td>
-                        <td><textarea rows="25" cols="100">{{toJson .EndPoint.ResponseHeaderPlaceholder}}</textarea>
-                        </td>
+                        <td>&nbsp;&nbsp;Header Placeholder</td>
+                        <td><textarea rows="25" cols="100">{{.ResponseHeaderPlaceholder}}</textarea></td>
                     </tr>
+                    {{end}}
 
                 </tbody>
             </table>

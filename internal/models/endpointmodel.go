@@ -45,6 +45,38 @@ func (m *EndPointModel) getTableName() []byte {
 }
 
 // -----------------------------------------------------------------
+// CountCreatedBy returns how many endpoints the given user created.
+//
+// Ownership gained by sharing is deliberately excluded: the per-user quota
+// limits what someone creates, and counting endpoints shared *to* them would
+// let anyone exhaust another user's allowance by sharing endpoints at them.
+// -----------------------------------------------------------------
+func (m *EndPointModel) CountCreatedBy(userEmail string) int {
+	count := 0
+
+	_ = m.DB.View(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(m.getTableName())
+		if bucket == nil {
+			return errors.New("table does not exits")
+		}
+
+		c := bucket.Cursor()
+		for k, v := c.First(); k != nil; k, v = c.Next() {
+			endpoint := EndPoint{}
+			if err := json.Unmarshal(v, &endpoint); err == nil {
+				if strings.EqualFold(strings.TrimSpace(endpoint.CreatedBy), strings.TrimSpace(userEmail)) {
+					count++
+				}
+			}
+		}
+
+		return nil
+	})
+
+	return count
+}
+
+// -----------------------------------------------------------------
 //
 // -----------------------------------------------------------------
 // We'll use the Insert method to add a new record to the "users" table.

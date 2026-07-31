@@ -73,8 +73,7 @@ type User struct {
 	//Role           string `json:"role" db:"role" form:"role"`
 	validator.Validator
 
-	OwnedEndPoints  []string `json:"endpoints" db:"endpoints" form:"-"`
-	SharedEndPoints []string `json:"sharedendpoints" db:"sharedendpoints" form:"-"`
+	OwnedEndPoints []string `json:"endpoints" db:"endpoints" form:"-"`
 }
 
 // -----------------------------------------------------------------
@@ -109,17 +108,35 @@ func (u *User) AssignOwnedEndPoint(id string) {
 }
 
 // -----------------------------------------------------------------
+// HasOwnedEndPoint reports membership of the owner list alone.
 //
+// Unlike OwnsEndPoint it does not treat superusers as owners of everything,
+// which is what makes it the right check when deciding whether an endpoint has
+// already been shared with someone.
 // -----------------------------------------------------------------
-func (u *User) AssignSharedEndPoint(id string) {
-
-	for _, eID := range u.SharedEndPoints {
+func (u *User) HasOwnedEndPoint(id string) bool {
+	for _, eID := range u.OwnedEndPoints {
 		if strings.EqualFold(eID, id) {
-			return
+			return true
 		}
 	}
 
-	u.SharedEndPoints = append(u.SharedEndPoints, id)
+	return false
+}
+
+// -----------------------------------------------------------------
+//
+// -----------------------------------------------------------------
+func (u *User) RemoveOwnedEndPoint(id string) {
+	remaining := make([]string, 0, len(u.OwnedEndPoints))
+
+	for _, eID := range u.OwnedEndPoints {
+		if !strings.EqualFold(eID, id) {
+			remaining = append(remaining, eID)
+		}
+	}
+
+	u.OwnedEndPoints = remaining
 }
 
 // -----------------------------------------------------------------

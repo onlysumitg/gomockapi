@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/onlysumitg/GoMockAPI/internal/validator"
 
@@ -597,6 +598,35 @@ func (app *application) UserOwnsEndPoint(w http.ResponseWriter, r *http.Request,
 }
 
 // ------------------------------------------------------
+// CanManageEndPointOwners reports whether the current user may change who owns
+// an endpoint.
+//
+// Deliberately narrower than UserOwnsEndPoint: co-owners get full control of
+// the endpoint itself, but only the creator and superadmins decide who else
+// gets access, so a co-owner cannot lock the creator out of their own endpoint.
+// ------------------------------------------------------
+func (app *application) CanManageEndPointOwners(w http.ResponseWriter, r *http.Request, endpoint *models.EndPoint) bool {
+	user, err := app.GetUser(r)
+	if err != nil {
+		app.UnauthorizedError(w, r)
+		return false
+	}
+
+	if user.IsSuperUser {
+		return true
+	}
+
+	if strings.EqualFold(strings.TrimSpace(endpoint.CreatedBy), strings.TrimSpace(user.Email)) {
+		return true
+	}
+
+	// Same response a non-owner gets, so co-owners cannot probe for the
+	// difference between "not allowed" and "does not exist".
+	app.notFound(w, nil)
+	return false
+}
+
+// ------------------------------------------------------
 func (app *application) EndPointOwnership(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		endpointID := chi.URLParam(r, "endpointid")
@@ -642,7 +672,9 @@ func (app *application) CanAddMoreEndpoints(r *http.Request) (bool, error) {
 		user.MaxAllowedEndpoints = app.maxAllowedEndPointsPerUser
 	}
 
-	if user.MaxAllowedEndpoints < 0 || len(user.OwnedEndPoints) < user.MaxAllowedEndpoints {
+	// Counts what the user created, not what they own: endpoints shared with
+	// them must not eat into their own allowance.
+	if user.MaxAllowedEndpoints < 0 || app.endpoints.CountCreatedBy(user.Email) < user.MaxAllowedEndpoints {
 		return true, nil // user has less endpoint then the set limit
 	} else {
 

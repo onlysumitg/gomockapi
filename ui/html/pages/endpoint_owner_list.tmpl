@@ -8,9 +8,27 @@ Owners
     <div class="col">
       <div class="card ">
         <div class="card-header">
-          <p class="h5">Owners</p>
+          <p class="h5">Owners of {{.EndPoint.Name}}</p>
         </div>
         <div class="card-body">
+
+          <form action="/endpoints/addowners/{{.EndPoint.ID}}" method="POST" class="mb-4">
+            <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+            <label for="email">Share with</label>
+            <div class="d-flex gap-2">
+              <input id="email" class="form-control {{with .Form.FieldErrors.email}}is-invalid{{end}}" type="email"
+                name="email" placeholder="Email address of an existing user" value="{{.Form.Email}}" required>
+              <button type="submit" class="btn btn-primary flex-shrink-0">Add owner</button>
+            </div>
+            {{with .Form.FieldErrors.email}}
+            <div class="invalid-feedback d-block">{{.}}</div>
+            {{end}}
+            <small class="form-text text-muted">
+              Owners can view and change this endpoint, including its responses and conditions.
+              Only you and an administrator can change who has access.
+            </small>
+          </form>
+
           <table id="epowners"
             class="table   table-borderless table-responsive-sm table-striped    ">
             <thead class="thead-dark">
@@ -18,21 +36,32 @@ Owners
             <tr>
                 <th>Email</th>
                 <th>Name</th>
-         
-         
-           
+                <th></th>
             </tr>
         </thead>
         <tbody>
             {{if .Users}}
 
+            {{$endpoint := .EndPoint}}
+            {{$csrf := .CSRFToken}}
             {{range .Users}}
             <tr>
                 <td>{{.Email}} </td>
 
                 <td>{{.Name}} </td>
-              
-      
+
+                <td class="text-end">
+                    {{if eq .Email $endpoint.CreatedBy}}
+                    <span class="badge bg-secondary">creator</span>
+                    {{else}}
+                    <form action="/endpoints/removeowner/{{$endpoint.ID}}" method="POST"
+                        onsubmit="return confirm('Remove {{.Email}} from this endpoint?');">
+                        <input type="hidden" name="csrf_token" value="{{$csrf}}">
+                        <input type="hidden" name="email" value="{{.Email}}">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                    </form>
+                    {{end}}
+                </td>
 
             </tr>
             {{end}}

@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/onlysumitg/GoMockAPI/internal/models"
+	"github.com/onlysumitg/GoMockAPI/internal/validator"
 	"github.com/onlysumitg/GoMockAPI/utils/stringutils"
 )
 
@@ -47,13 +49,14 @@ func (app *application) EndPointHandlers(router *chi.Mux) {
 		g1 := r.Group(nil)
 		g1.Use(app.EndPointOwnership)
 		g1.Get("/logs/{endpointid}", app.Endpointlogs)
+		// Sharing: any co-owner may edit the endpoint, but only its creator and
+		// superadmins may change who has access. Enforced per handler by
+		// CanManageEndPointOwners.
 		g1.Get("/owners/{endpointid}", app.ownerList)
-		g1.Post("/addowners/{endpointid}", app.ownerList)
+		g1.Post("/addowners/{endpointid}", app.ownerAdd)
+		g1.Post("/removeowner/{endpointid}", app.ownerRemove)
 
 		g1.Get("/copy/{endpointid}", app.makeCopy)
-
-		// g1.Get("/addowners/{endpointid}", app.ownerAdd)
-		// g1.Post("/addowners/{endpointid}", app.ownerAdd)
 	})
 
 }
@@ -390,11 +393,36 @@ func (app *application) ownerList(w http.ResponseWriter, r *http.Request) {
 
 	endpointID := chi.URLParam(r, "endpointid")
 
-	if !app.UserOwnsEndPoint(w, r, endpointID) {
+	endpoint, err := app.endpoints.Get(endpointID)
+	if err != nil {
+		app.notFound(w, err)
 		return
 	}
 
+	if !app.CanManageEndPointOwners(w, r, endpoint) {
+		return
+	}
+
+	app.renderOwnerList(w, r, http.StatusOK, endpoint, models.AddOwnerForm{})
+}
+
+// ------------------------------------------------------
+// renderOwnerList draws the owners page, carrying any form errors back with it.
+// ------------------------------------------------------
+func (app *application) renderOwnerList(w http.ResponseWriter, r *http.Request, status int, endpoint *models.EndPoint, form models.AddOwnerForm) {
 	data := app.newTemplateData(r)
+	data.EndPoint = endpoint
+	data.Users = app.users.GetEndPointowners(endpoint.ID)
+	data.Form = form
+
+	app.render(w, r, status, "endpoint_owner_list.tmpl", data)
+}
+
+// ------------------------------------------------------
+// Share an endpoint by adding a co-owner.
+// ------------------------------------------------------
+func (app *application) ownerAdd(w http.ResponseWriter, r *http.Request) {
+	endpointID := chi.URLParam(r, "endpointid")
 
 	endpoint, err := app.endpoints.Get(endpointID)
 	if err != nil {
@@ -402,53 +430,92 @@ func (app *application) ownerList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	users := app.users.GetEndPointowners(endpointID)
+	if !app.CanManageEndPointOwners(w, r, endpoint) {
+		return
+	}
 
-	data.Users = users
-	data.EndPoint = endpoint
-	app.render(w, r, http.StatusOK, "endpoint_owner_list.tmpl", data)
+	form := models.AddOwnerForm{}
+	if err := app.decodePostForm(r, &form); err != nil {
+		app.clientError(w, http.StatusBadRequest, err)
+		return
+	}
 
+	form.CheckField(validator.NotBlank(form.Email), "email", "This field cannot be blank")
+	form.CheckField(validator.Matches(form.Email, validator.EmailRX), "email", "This field must be a valid email address")
+
+	if form.Valid() {
+		target, err := app.users.GetByEmail(form.Email)
+		switch {
+		case err != nil:
+			form.CheckField(false, "email", "No user with that email address")
+
+		case target.HasOwnedEndPoint(endpoint.ID):
+			// Membership rather than OwnsEndPoint: a superuser owns everything
+			// implicitly, but can still be added explicitly.
+			form.CheckField(false, "email", "This user already has access")
+
+		default:
+			target.AssignOwnedEndPoint(endpoint.ID)
+			if err := app.users.Save(target, false); err != nil {
+				app.serverError500(w, r, err)
+				return
+			}
+
+			app.sessionManager.Put(r.Context(), "flash", fmt.Sprintf("Endpoint shared with %s", target.Email))
+			http.Redirect(w, r, fmt.Sprintf("/endpoints/owners/%s", endpoint.ID), http.StatusSeeOther)
+			return
+		}
+	}
+
+	app.renderOwnerList(w, r, http.StatusUnprocessableEntity, endpoint, form)
 }
 
 // ------------------------------------------------------
-// EndPoint details
+// Withdraw a co-owner's access.
 // ------------------------------------------------------
-// func (app *application) ownerAdd(w http.ResponseWriter, r *http.Request) {
+func (app *application) ownerRemove(w http.ResponseWriter, r *http.Request) {
+	endpointID := chi.URLParam(r, "endpointid")
 
-// 	form := models.AddOwnerForm{}
-// 	endpointID := chi.URLParam(r, "endpointid")
+	endpoint, err := app.endpoints.Get(endpointID)
+	if err != nil {
+		app.notFound(w, err)
+		return
+	}
 
-// 	endpoint, err := app.endpoints.Get(endpointID)
-// 	if err != nil {
-// 		app.notFound(w, err)
-// 		return
-// 	}
+	if !app.CanManageEndPointOwners(w, r, endpoint) {
+		return
+	}
 
-// 	if r.Method == http.MethodPost {
-// 		err := app.decodePostForm(r, &form)
+	if err := r.ParseForm(); err != nil {
+		app.clientError(w, http.StatusBadRequest, err)
+		return
+	}
 
-// 		if err != nil {
-// 			app.clientError(w, http.StatusBadRequest, err)
-// 			return
-// 		}
+	form := models.AddOwnerForm{Email: strings.TrimSpace(r.PostForm.Get("email"))}
 
-// 		form.CheckField(validator.NotBlank(form.Email), "email", "This field cannot be blank")
-// 		form.CheckField(validator.Matches(form.Email, validator.EmailRX), "email", "This field must be a valid email address")
-// 		if form.Valid() {
+	target, err := app.users.GetByEmail(form.Email)
+	switch {
+	case err != nil:
+		form.CheckField(false, "email", "No user with that email address")
 
-// 		}
-// 	}
+	case strings.EqualFold(strings.TrimSpace(endpoint.CreatedBy), strings.TrimSpace(target.Email)):
+		// The creator keeps access to what they made.
+		form.CheckField(false, "email", "The creator of an endpoint cannot be removed")
 
-// 	users := app.users.GetEndPointowners(endpointID)
+	default:
+		target.RemoveOwnedEndPoint(endpoint.ID)
+		if err := app.users.Save(target, false); err != nil {
+			app.serverError500(w, r, err)
+			return
+		}
 
-// 	data := app.newTemplateData(r)
+		app.sessionManager.Put(r.Context(), "flash", fmt.Sprintf("Access removed for %s", target.Email))
+		http.Redirect(w, r, fmt.Sprintf("/endpoints/owners/%s", endpoint.ID), http.StatusSeeOther)
+		return
+	}
 
-// 	data.Users = users
-// 	data.EndPoint = endpoint
-// 	data.Form = form
-// 	app.render(w, r, http.StatusOK, "endpoint_owner_add.tmpl", data)
-
-// }
+	app.renderOwnerList(w, r, http.StatusUnprocessableEntity, endpoint, form)
+}
 
 // ------------------------------------------------------
 // EndPoint details
