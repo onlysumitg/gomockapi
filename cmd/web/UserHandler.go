@@ -428,7 +428,11 @@ func (app *application) userVerification(w http.ResponseWriter, r *http.Request)
 
 	user, err := app.users.Get(userid)
 	if err != nil {
+		// Without this return, Verify dereferences a nil user. It only survived
+		// because Verify bails out early when the verification bucket does not
+		// exist yet, which stops being true as soon as anyone signs up.
 		app.clientError(w, http.StatusBadRequest, nil)
+		return
 	}
 
 	if app.users.Verify(user, verificationid, app.users.GetVerificationTableName()) {

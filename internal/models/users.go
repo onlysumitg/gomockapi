@@ -486,6 +486,13 @@ func (m *UserModel) CreateNewVerification(u *User, table []byte) (string, error)
 // We'll use the Insert method to add a new record to the "users" table.
 func (m *UserModel) Verify(u *User, verificationId string, table []byte) bool {
 
+	// Callers reach here with a nil user when a verification link names an
+	// account that does not exist. Nothing can match, and dereferencing u below
+	// would panic.
+	if u == nil {
+		return false
+	}
+
 	userActualVerificationId := ""
 
 	_ = m.DB.View(func(tx *bolt.Tx) error {
