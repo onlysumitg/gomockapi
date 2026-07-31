@@ -8,6 +8,7 @@ import (
 	"net/http/cookiejar"
 	"net/http/httptest"
 	"net/url"
+	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -28,6 +29,15 @@ import (
 //     Use t.Setenv rather than writing an .env file.
 func newTestApplication(t *testing.T) *application {
 	t.Helper()
+
+	// The test server speaks plain HTTP, and env.UseHttps() defaults to true
+	// when HTTPS is unset, which marks the session cookie Secure. A cookie jar
+	// then refuses to send it over http:// and every login silently fails to
+	// stick. Tests that care about the flag set it themselves before calling
+	// this.
+	if os.Getenv("HTTPS") == "" {
+		t.Setenv("HTTPS", "false")
+	}
 
 	dir := t.TempDir()
 

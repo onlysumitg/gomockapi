@@ -37,6 +37,13 @@ func loginAsSuperUser(t *testing.T, app *application, ts *httptest.Server) {
 	if code != http.StatusSeeOther {
 		t.Fatalf("login: got status %d, want %d", code, http.StatusSeeOther)
 	}
+
+	// A 303 from the login POST is not proof of anything: RequireAuthentication
+	// answers with 303 too, so a dropped session cookie looks identical at
+	// every later call site. Confirm a protected page actually renders.
+	if code, _ := get(t, ts, "/endpoints"); code != http.StatusOK {
+		t.Fatalf("login did not establish a session: GET /endpoints returned %d", code)
+	}
 }
 
 // API call logs are written to and read from LogDB (db/log_YYYYMMDD.db), so
