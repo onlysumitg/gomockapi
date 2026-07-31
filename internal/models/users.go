@@ -125,19 +125,6 @@ func (u *User) AssignSharedEndPoint(id string) {
 // -----------------------------------------------------------------
 //
 // -----------------------------------------------------------------
-func (u *User) setEncruptedPassword(password string) {
-	hash, err := bcrypt.GenerateFromPassword([]byte(password), 12)
-	if err != nil {
-		u.HashedPassword = []byte(password)
-	} else {
-		u.HashedPassword = hash
-	}
-
-}
-
-// -----------------------------------------------------------------
-//
-// -----------------------------------------------------------------
 // Define a new UserModel type which wraps a database connection pool.
 type UserModel struct {
 	DB *bolt.DB
@@ -265,12 +252,12 @@ func (m *UserModel) Save(u *User, updatePasword bool) error {
 		//id, _ := bucket.NextSequence()
 		//u.ID = int(id)
 		// Marshal user data into bytes.
+		u.Email = strings.ToLower(u.Email)
+
 		buf, err := json.Marshal(u)
 		if err != nil {
 			return err
 		}
-
-		u.Email = strings.ToLower(u.Email)
 
 		// key = > user.name+ user.id
 		key := u.ID // + string(itob(u.ID))

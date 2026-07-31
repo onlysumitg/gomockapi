@@ -64,11 +64,9 @@ func (p *EndPointResponseParam) getValueToUse(requestMap map[string]xmlutils.Val
 		} else {
 			return overrideValue, err
 		}
-	} else {
-		return overrideValue, nil
 	}
 
-	return p.DefaultValue, nil
+	return overrideValue, nil
 }
 
 // -----------------------------------------------------------------

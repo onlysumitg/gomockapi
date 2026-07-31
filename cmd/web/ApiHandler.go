@@ -86,7 +86,7 @@ func (app *application) apilogs(w http.ResponseWriter, r *http.Request) {
 // ------------------------------------------------------
 
 func (app *application) InjectClientInfo(r *http.Request, requesyBodyFlatMap map[string]xmlutils.ValueDatatype) {
-	requesyBodyFlatMap["*CLIENT_IP"] = xmlutils.ValueDatatype{r.RemoteAddr, "STRING"}
+	requesyBodyFlatMap["*CLIENT_IP"] = xmlutils.ValueDatatype{Value: r.RemoteAddr, DataType: "STRING"}
 
 }
 
@@ -204,18 +204,18 @@ func (app *application) POST(w http.ResponseWriter, r *http.Request) {
 
 	// add path parms
 	for _, p := range pathParams {
-		requestBodyFlatMap[p.Name] = xmlutils.ValueDatatype{p.Value, "STRING"}
+		requestBodyFlatMap[p.Name] = xmlutils.ValueDatatype{Value: p.Value, DataType: "STRING"}
 	}
 
 	// add query params
 	for k, v := range queryParams {
-		requestBodyFlatMap[k] = xmlutils.ValueDatatype{v, "STRING"}
+		requestBodyFlatMap[k] = xmlutils.ValueDatatype{Value: v, DataType: "STRING"}
 	}
 
 	// add posted form data
 	formMap, _ := httputils.FormToJson(r)
 	for k, v := range formMap {
-		requestBodyFlatMap[k] = xmlutils.ValueDatatype{v, "STRING"}
+		requestBodyFlatMap[k] = xmlutils.ValueDatatype{Value: v, DataType: "STRING"}
 	}
 
 	app.ProcessAPICall(w, r, collection, endpointName, pathParams, requestBodyFlatMap)
@@ -239,7 +239,7 @@ func (app *application) ProcessAPICall(w http.ResponseWriter, r *http.Request, c
 	hmap := httputils.GetHeadersAsMap(r)
 
 	for k, v := range hmap {
-		requesyBodyFlatMap[fmt.Sprintf("*HEADER_%s", strings.ToUpper(k))] = xmlutils.ValueDatatype{v, "STRING"}
+		requesyBodyFlatMap[fmt.Sprintf("*HEADER_%s", strings.ToUpper(k))] = xmlutils.ValueDatatype{Value: v, DataType: "STRING"}
 	}
 
 	// ----------------- Header as MAP -------------------Start
