@@ -166,7 +166,7 @@ func (app *application) POST(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	requestBodyMap := make(map[string]any)
+	var requestBody any // object or array
 	requestBodyFlatMap := make(map[string]xmlutils.ValueDatatype)
 
 	//need to handle xml body
@@ -176,7 +176,7 @@ func (app *application) POST(w http.ResponseWriter, r *http.Request) {
 	switch endPoint.SampleRequestType {
 	case "JSON":
 		decoder := json.NewDecoder(r.Body)
-		err := decoder.Decode(&requestBodyMap)
+		err := decoder.Decode(&requestBody)
 		switch {
 		case err == io.EOF:
 			// empty body
@@ -185,7 +185,7 @@ func (app *application) POST(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		requestBodyFlatMap = jsonutils.JsonToFlatMapFromMap(requestBodyMap)
+		requestBodyFlatMap = jsonutils.JsonToFlatMapFromAny(requestBody)
 
 	case "XML":
 		b, err := io.ReadAll(r.Body)

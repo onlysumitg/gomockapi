@@ -3,66 +3,45 @@ package jsonutils
 import (
 	"encoding/json"
 	"fmt"
-
-	"github.com/onlysumitg/GoMockAPI/utils/typeutils"
 )
 
-func JsonToMapPlaceholder(stringJson string) (map[string]any, error) {
-	var parsedJson map[string]any
-	flatmap := make(map[string]any)
+// JsonToMapPlaceholder replaces every leaf value of the JSON with the
+// token {{FLATKEY}}, using the same keys as JsonToFlatMap.
+// The top level may be an object or an array.
+func JsonToMapPlaceholder(stringJson string) (any, error) {
+	var parsedJson any
 
 	err := json.Unmarshal([]byte(stringJson), &parsedJson)
-	if err == nil {
-		flatmap = setMapValues(parsedJson, "")
+	if err != nil {
+		return nil, err
 	}
 
-	return flatmap, err
+	return setPlaceholders(parsedJson, ""), nil
 }
 
 // -----------------------------------------------------------
 //
 // -----------------------------------------------------------
-func setMapValues(parsedJson map[string]any, keys string) map[string]any {
-
-	for key, value := range parsedJson {
-
-		keyChain := keys
-		if keyChain == "" {
-			keyChain = key
-		} else {
-			keyChain = fmt.Sprintf("%s.%s", keyChain, key) // keyChain + "__" + key
+func setPlaceholders(value any, keyChain string) any {
+	switch v := value.(type) {
+	case map[string]any:
+		for key, child := range v {
+			childKey := key
+			if keyChain != "" {
+				childKey = fmt.Sprintf("%s.%s", keyChain, key)
+			}
+			v[key] = setPlaceholders(child, childKey)
 		}
+		return v
 
-		if typeutils.IsMap(value) {
-			setMapValues(value.(map[string]any), keyChain)
-		} else if typeutils.IsList(value) {
-
-			listMap := make(map[string]any)
-			newList, ok := value.([]any)
-			if !ok {
-				fmt.Println("ERRORRRRRRRRRRRRRR 3", value)
-			}
-
-			for i, lValue := range newList {
-				xkey := fmt.Sprintf("%s[%d]", keyChain, i) // keyChain + "$$" + strconv.Itoa(i)
-				listMap[xkey] = lValue
-
-			}
-
-			tempMap := setMapValues(listMap, "")
-			tempList := make([]any, 0)
-			for _, tVal := range tempMap {
-				tempList = append(tempList, tVal)
-			}
-
-			parsedJson[key] = tempList
-
-		} else {
-
-			parsedJson[key] = fmt.Sprintf("{{%s}}", keyChain)
+	case []any:
+		for i, child := range v {
+			childKey := fmt.Sprintf("%s[%d]", keyChain, i) // "[0]" at the top level
+			v[i] = setPlaceholders(child, childKey)
 		}
+		return v
+
+	default:
+		return fmt.Sprintf("{{%s}}", keyChain)
 	}
-
-	return parsedJson
-
 }

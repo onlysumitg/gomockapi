@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"reflect"
-	"strconv"
 
 	"github.com/onlysumitg/GoMockAPI/utils/typeutils"
 	"github.com/onlysumitg/GoMockAPI/utils/xmlutils"
@@ -55,7 +54,8 @@ type JsonValues_NOTINTUSE struct {
 //
 // -----------------------------------------------------------
 func JsonToFlatMap(stringJson string) (map[string]xmlutils.ValueDatatype, error) {
-	var parsedJson map[string]any
+	// any, not map[string]any: the top level may be an array
+	var parsedJson any
 	flatmap := make(map[string]xmlutils.ValueDatatype)
 
 	err := json.Unmarshal([]byte(stringJson), &parsedJson)
@@ -74,6 +74,14 @@ func JsonToFlatMapFromMap(parsedJson map[string]any) map[string]xmlutils.ValueDa
 	flatmap := processValue(parsedJson, "")
 
 	return flatmap
+}
+
+// -----------------------------------------------------------
+// JsonToFlatMapFromAny flattens an already decoded JSON value,
+// which may be an object or an array at the top level
+// -----------------------------------------------------------
+func JsonToFlatMapFromAny(parsedJson any) map[string]xmlutils.ValueDatatype {
+	return processValue(parsedJson, "")
 }
 
 // -----------------------------------------------------------
@@ -124,7 +132,7 @@ func buildFlatList(jsonArray []any, keys string) map[string]xmlutils.ValueDataty
 
 		keyChain := keys
 		if keyChain == "" {
-			keyChain = strconv.Itoa(i)
+			keyChain = fmt.Sprintf("[%d]", i) // top level array
 		} else {
 			keyChain = fmt.Sprintf("%s[%d]", keyChain, i) // keyChain + "$$" + strconv.Itoa(i)
 		}
