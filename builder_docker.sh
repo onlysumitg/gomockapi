@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-APP_VERSION='v1.0.9'
+APP_VERSION='v1.0.10'
 
 
 output_name='gomockapi_' 

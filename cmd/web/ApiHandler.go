@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"mime"
 	"net/http"
 	"runtime/debug"
 	"strings"
@@ -173,8 +174,19 @@ func (app *application) POST(w http.ResponseWriter, r *http.Request) {
 
 	queryParams, _ := httputils.QueryParamToMap(fmt.Sprint(r.URL))
 
-	switch endPoint.SampleRequestType {
-	case "JSON":
+	isForm, err := parseFormBody(r)
+	if err != nil {
+		app.errorResponse(w, r, http.StatusBadRequest, "Invalid form body: "+err.Error())
+		return
+	}
+
+	switch {
+	case isForm:
+		// form encoded body is accepted regardless of the endpoint's sample request type,
+		// field names map to the same flat keys as a JSON object sample request
+		requestBodyFlatMap = jsonutils.JsonToFlatMapFromMap(formValuesToMap(r.PostForm))
+
+	case endPoint.SampleRequestType == "JSON":
 		decoder := json.NewDecoder(r.Body)
 		err := decoder.Decode(&requestBody)
 		switch {
@@ -187,7 +199,7 @@ func (app *application) POST(w http.ResponseWriter, r *http.Request) {
 
 		requestBodyFlatMap = jsonutils.JsonToFlatMapFromAny(requestBody)
 
-	case "XML":
+	case endPoint.SampleRequestType == "XML":
 		b, err := io.ReadAll(r.Body)
 		// b, err := ioutil.ReadAll(resp.Body)  Go.1.15 and earlier
 		if err != nil {
@@ -212,14 +224,52 @@ func (app *application) POST(w http.ResponseWriter, r *http.Request) {
 		requestBodyFlatMap[k] = xmlutils.ValueDatatype{Value: v, DataType: "STRING"}
 	}
 
-	// add posted form data
-	formMap, _ := httputils.FormToJson(r)
-	for k, v := range formMap {
-		requestBodyFlatMap[k] = xmlutils.ValueDatatype{Value: v, DataType: "STRING"}
-	}
-
 	app.ProcessAPICall(w, r, collection, endpointName, pathParams, requestBodyFlatMap)
 
+}
+
+// ------------------------------------------------------
+// parseFormBody parses the body when the request is
+// application/x-www-form-urlencoded or multipart/form-data.
+// Returns false (body untouched) for any other content type.
+// ------------------------------------------------------
+func parseFormBody(r *http.Request) (bool, error) {
+	mediaType, _, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
+	if err != nil {
+		return false, nil
+	}
+
+	switch mediaType {
+	case "application/x-www-form-urlencoded":
+		return true, r.ParseForm()
+	case "multipart/form-data":
+		return true, r.ParseMultipartForm(32 << 20)
+	}
+
+	return false, nil
+}
+
+// ------------------------------------------------------
+// formValuesToMap keeps field names as sent. A repeated
+// field becomes a list so it flattens to name[0], name[1]...
+// ------------------------------------------------------
+func formValuesToMap(values map[string][]string) map[string]any {
+	asMap := make(map[string]any, len(values))
+	for k, v := range values {
+		switch len(v) {
+		case 0:
+			asMap[k] = ""
+		case 1:
+			asMap[k] = v[0]
+		default:
+			list := make([]any, len(v))
+			for i, item := range v {
+				list[i] = item
+			}
+			asMap[k] = list
+		}
+	}
+	return asMap
 }
 
 // ------------------------------------------------------
