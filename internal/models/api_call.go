@@ -6,10 +6,8 @@ import (
 	"fmt"
 	"html"
 	"io/ioutil"
-	"log"
 	"math/rand"
 	"net/http"
-	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -20,9 +18,6 @@ import (
 	"github.com/onlysumitg/GoMockAPI/utils/xmlutils"
 	bolt "go.etcd.io/bbolt"
 )
-
-var infoLog *log.Logger = log.New(os.Stderr, "INFO \t", log.Ldate|log.Ltime)
-var errorLog *log.Logger = log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime)
 
 var dealyRangeRegex = regexp.MustCompile(`(?m)\((?P<Start>\d+),(?P<End>\d*)\)`)
 
@@ -442,12 +437,8 @@ func (apiCall *ApiCall) LogInfo(logEntry string) {
 	defer apiCall.logMutex.Unlock()
 	apiCall.logMutex.Lock()
 
-	buf := bytes.NewBufferString("")
-
-	infoLog.SetOutput(buf)
-	infoLog.Println(logEntry)
-
-	apiCall.Log = append(apiCall.Log, buf.String())
+	entry := fmt.Sprintf("INFO \t%s %s\n", time.Now().Format("2006/01/02 15:04:05"), logEntry)
+	apiCall.Log = append(apiCall.Log, entry)
 
 }
 
@@ -456,14 +447,10 @@ func (apiCall *ApiCall) LogInfo(logEntry string) {
 // ------------------------------------------------------
 func (apiCall *ApiCall) LogError(logEntry string) {
 	defer apiCall.logMutex.Unlock()
-
-	buf := bytes.NewBufferString("")
-
-	errorLog.SetOutput(buf)
-	errorLog.Println(logEntry)
-
 	apiCall.logMutex.Lock()
-	apiCall.Log = append(apiCall.Log, buf.String())
+
+	entry := fmt.Sprintf("ERROR\t%s %s\n", time.Now().Format("2006/01/02 15:04:05"), logEntry)
+	apiCall.Log = append(apiCall.Log, entry)
 
 }
 

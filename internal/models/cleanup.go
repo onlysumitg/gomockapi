@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"log"
 
 	bolt "go.etcd.io/bbolt"
 )
@@ -67,7 +68,7 @@ func ClearLogs(db *bolt.DB, logDB *bolt.DB) {
 		return err
 	})
 	if err != nil {
-		errorLog.Println("clearing api logs:", err)
+		log.Println("ERROR\tclearing api logs:", err)
 	}
 
 	// clear end point log entrie
