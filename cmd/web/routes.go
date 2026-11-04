@@ -25,6 +25,7 @@ package main
 import (
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -73,12 +74,14 @@ func addHttpRateLimiter(app *application, router *chi.Mux) {
 // -----------------------------------------------------------------
 func addMiddleWares(app *application, router *chi.Mux) {
 
-	router.Use(app.sessionManager.LoadAndSave)
+	// Session and request logger are skipped for /api/* routes to avoid
+	// BoltDB session I/O and log mutex contention on the mock-serving path.
+	router.Use(skipForAPI(app.sessionManager.LoadAndSave))
+	router.Use(skipForAPI(middleware.Logger))
 
 	// A good base middleware stack : inbuilt in chi
 	router.Use(middleware.RequestID)
 	router.Use(middleware.RealIP)
-	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.SetHeader("X-Frame-Options", "DENY"))
 
@@ -89,6 +92,20 @@ func addMiddleWares(app *application, router *chi.Mux) {
 
 	//router.Use(app.MustHasPathsPermission)
 
+}
+
+// skipForAPI wraps a middleware so it is bypassed for /api/* requests.
+func skipForAPI(mw func(http.Handler) http.Handler) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		wrapped := mw(next)
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if strings.HasPrefix(r.URL.Path, "/api/") {
+				next.ServeHTTP(w, r)
+				return
+			}
+			wrapped.ServeHTTP(w, r)
+		})
+	}
 }
 
 // -----------------------------------------------------------------

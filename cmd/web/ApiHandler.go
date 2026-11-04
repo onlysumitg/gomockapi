@@ -380,13 +380,14 @@ func (app *application) ProcessAPICall(w http.ResponseWriter, r *http.Request, c
 			//app.endpoints.UpdateRequestParamFromApiCall(nil, endPoint, requestJson)
 			app.invalidateEndPointCache()
 		}
-		orignalEndPoint, err := app.endpoints.Get(endPoint.ID)
 
-		if err != nil {
+		if !endPoint.EnableLogging {
 			return
 		}
 
-		if !orignalEndPoint.EnableLogging {
+		orignalEndPoint, err := app.endpoints.Get(endPoint.ID)
+
+		if err != nil {
 			return
 		}
 
