@@ -87,6 +87,49 @@ func (s EndPoint) ClearCache() {
 	//database.ClearCache(s)
 }
 
+// IsCacheable returns true when the endpoint's response can be cached
+// based on condition-relevant request values alone. Endpoints that use
+// RANDOM values, REQUEST[] references, or proxy (CallActualEndPoint)
+// are not cacheable.
+func (s *EndPoint) IsCacheable() bool {
+	for _, cg := range s.ConditionGroups {
+		if cg.CallActualEndPoint {
+			return false
+		}
+		for _, p := range cg.ConditionGroupParameters {
+			if IsDynamicAssignment(p.AssgineValue) {
+				return false
+			}
+		}
+	}
+	for _, r := range s.ResponseMap {
+		for _, rp := range r.ResponseParams {
+			if IsDynamicAssignment(rp.OverrideValue) {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+// ConditionKeys returns the deduplicated set of request flat-map keys
+// that this endpoint's conditions inspect. These keys form the cache key.
+func (s *EndPoint) ConditionKeys() []string {
+	seen := make(map[string]struct{})
+	keys := make([]string, 0)
+	for _, cg := range s.ConditionGroups {
+		for _, c := range cg.Conditions {
+			if c.RequestParam != nil {
+				if _, ok := seen[c.RequestParam.Key]; !ok {
+					seen[c.RequestParam.Key] = struct{}{}
+					keys = append(keys, c.RequestParam.Key)
+				}
+			}
+		}
+	}
+	return keys
+}
+
 // ------------------------------------------------------------
 //
 // ------------------------------------------------------------

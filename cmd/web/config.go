@@ -23,6 +23,9 @@ type application struct {
 	endPointMutex        sync.RWMutex
 	invalidEndPointCache bool
 
+	// responseCache maps "endpointKey|k1=v1|k2=v2" to a cached API response.
+	responseCache sync.Map
+
 	errorLog *log.Logger
 	infoLog  *log.Logger
 

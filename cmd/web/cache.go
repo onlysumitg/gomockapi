@@ -12,6 +12,7 @@ func (app *application) invalidateEndPointCache() {
 	app.endPointMutex.Lock()
 	app.invalidEndPointCache = true
 	app.endPointMutex.Unlock()
+	app.clearResponseCache()
 }
 
 // GetEndPoint resolves a mock endpoint by collection, name and method,

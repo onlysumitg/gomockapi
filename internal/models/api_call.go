@@ -169,6 +169,21 @@ func (a *ApiCall) ProcessAdditionalResponseValues() {
 // ------------------------------------------------------
 //
 // ------------------------------------------------------
+// GetDelayValue returns the raw delay string (e.g. "500" or "(100,1000)")
+// for the current response, or "" if none is configured.
+func (a *ApiCall) GetDelayValue() string {
+	key := fmt.Sprintf("%s_%s", a.ResponseID, "*DELAY_RESPONSE_MILLI_SEC")
+	v, found := a.AdditionalResponseValues[key]
+	if !found {
+		return ""
+	}
+	s, ok := v.(string)
+	if !ok {
+		return ""
+	}
+	return s
+}
+
 func (a *ApiCall) CheckAdditionalDelay() {
 	// *DELAY_RESPONSE_MILLI_SEC
 	key := fmt.Sprintf("%s_%s", a.ResponseID, "*DELAY_RESPONSE_MILLI_SEC")

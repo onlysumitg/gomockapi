@@ -307,6 +307,17 @@ func (app *application) ProcessAPICall(w http.ResponseWriter, r *http.Request, c
 		return
 	}
 
+	// Response cache: skip BuildResponse + Finalize when possible.
+	if endPoint.IsCacheable() {
+		epKey := fmt.Sprintf("%s_%s_%s", strings.ToLower(collection), strings.ToLower(apiName), strings.ToLower(r.Method))
+		cacheKey := buildResponseCacheKey(epKey, endPoint.ConditionKeys(), requesyBodyFlatMap)
+		if cr, ok := app.getResponseCache(cacheKey); ok {
+			cr.applyCachedDelay()
+			app.writeJSONorXML(cr.ResponseType, w, cr.StatusCode, cr.Body, cr.ResponseHeader)
+			return
+		}
+	}
+
 	apiCall := &models.ApiCall{
 		ID: uuid.NewString(),
 		//Request:         requestJson,
@@ -333,6 +344,19 @@ func (app *application) ProcessAPICall(w http.ResponseWriter, r *http.Request, c
 	// JSON or XML ===> TODO
 	//app.writeJSON(w, apiCall.ResponseCode, apiCall.Response, apiCall.GetHttpHeader())
 	//app.writeJSON(w, apiCall.ResponseCode, apiCall.Response, apiCall.GetHttpHeader())
+
+	// Store in response cache after computing.
+	if endPoint.IsCacheable() {
+		epKey := fmt.Sprintf("%s_%s_%s", strings.ToLower(collection), strings.ToLower(apiName), strings.ToLower(r.Method))
+		cacheKey := buildResponseCacheKey(epKey, endPoint.ConditionKeys(), requesyBodyFlatMap)
+		app.setResponseCache(cacheKey, &cachedResponse{
+			StatusCode:     apiCall.StatusCode,
+			Body:           apiCall.FinalResponseString,
+			ResponseType:   apiCall.FinalResponseType,
+			ResponseHeader: apiCall.GetHttpHeader(),
+			DelayValue:     apiCall.GetDelayValue(),
+		})
+	}
 
 	app.writeJSONorXML(apiCall.FinalResponseType, w, apiCall.StatusCode, apiCall.FinalResponseString, apiCall.GetHttpHeader())
 
